@@ -39,6 +39,9 @@ def create_app():
     from update import views as update_views
     app.register_blueprint(update_views.update, url_prefix="/update")
 
+    from detail import views as detail_views
+    app.register_blueprint(detail_views.detail, url_prefix="/detail")
+
     from estimate import views as estimate_views
     app.register_blueprint(estimate_views.estimate, url_prefix="/estimate")
 

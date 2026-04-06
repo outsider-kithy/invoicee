@@ -163,6 +163,10 @@ h2{
 h3{
   text-align: center;
 }
+h4{
+  text-align: center;
+  margin: 1.0rem auto;
+}
 p.error{
   margin: 0 auto;
   text-align: center;

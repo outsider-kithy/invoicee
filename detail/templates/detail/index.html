@@ -1,0 +1,29 @@
+{% extends "top/base.html" %}
+{% block title %}ジョブの詳細ページ{% endblock %}
+
+{% block content %}
+<h3>ジョブの詳細</h3>
+<h4>{{ selectedJob['project'].project_name }} | {{ selectedJob['title'] }} </h4>
+
+<table>
+    <thead class="items">
+        <th>作業日</th>
+        <th>作業タイプ</th>
+        <th>作業内容</th>
+        <th>金額</th>
+    </thead>
+
+    <form>
+    {% for content in contents %}
+    <tr class="jobs">
+        <td>{{ content['created'] }}</td>
+        <td>{{ content['work'].work_type }}</td>
+        <td>{{ content['work_content'] }}</td>
+        <td>{{ "¥{:,d}".format(content['work'].price) }}</td>
+    </tr>
+    {% endfor %}
+    </form>
+</table>
+
+
+{% endblock %}
