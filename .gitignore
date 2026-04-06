@@ -8,6 +8,6 @@
 
 # Built Visual Studio Code Extensions
 *.vsix
-.venv
+.venv/
 .env.development
 .env.production
