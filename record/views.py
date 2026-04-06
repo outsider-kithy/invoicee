@@ -24,9 +24,6 @@ def index():
         title=request.form['title']
         project=request.form['project']
         tool=request.form['tool']
-        client=request.form['client']
-        agency=request.form['agency']
-        account=request.form['account']
         error=None
         
         if not title:
@@ -35,12 +32,6 @@ def index():
             error="プロジェクト名が選択されていません"
         if not tool:
             error="ツール名が選択されていません"
-        if not client:
-            error="クライアント名が選択されていません"
-        if not agency:
-            error="代理店名が選択されていません"
-        if not account:
-            error="担当者名が選択されていません"
         if error is not None:
             flash(error)
         else:
@@ -52,51 +43,22 @@ def index():
 
             #ツール名からtool_idを取得
             t=session.query(Tool).filter(Tool.tool_type==tool)
-            #session.close()
             for i in t:
                 toolId=i.id
-                #print(toolId)
 
                 #ツールidから価格を判定
                 p=0
                 p=session.query(Tool).filter(Tool.id==toolId)
-                #session.close()
                 for j in p:
                     price=j.price
-                    #print(price)
 
             #プロジェクト名からproject_idを取得
             pj=session.query(Project).filter(Project.project_name==project)
-            #session.close()
             for n in pj:
                 projectId=n.id
-                #projectName=n.project_name
-                #print(projectName)
-
-
-            #クライアント名からclient_idを取得
-            c=session.query(Client).filter(Client.client_name==client)
-            #session.close()
-            for k in c:
-                clientId=k.id
-                #clientName=k.client_name
-                #print(clientName)
-
-            #エージェンシー名からagency_idを取得
-            a=session.query(Agency).filter(Agency.agency_name==agency)
-            #session.close()
-            for l in a:
-                agencyId=l.id
-                #agencyName=l.agency_name
-                #print(agencyName)
-            
-            #担当者名からaccount_idを取得
-            ac=session.query(Account).filter(Account.account_name==account)
-            #session.close()
-            for m in ac:
-                accountId=m.id
-                #accountName=m.account_name
-                #print(accountName)
+                clientId = n.client_id
+                agencyId = n.agency_id
+                accountId = n.account_id
 
                 #ジョブテーブルに新たなジョブを登録
                 session.add(Job(

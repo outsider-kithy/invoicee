@@ -26,18 +26,35 @@ def writeExcel(exportJobList,agencyName,accountName,projectName):
     workbook = openpyxl.load_workbook(OUTPUT_FILE)
     worksheet=workbook.get_sheet_by_name(u'シート1')
 
+    offset = 0
     #各項目と金額を入力
     for i in range(len(exportJobList)):
-        #項目
-        worksheet.cell(row=i+12,column=1).value=exportJobList[i][0]
+        if (exportJobList[i][1]):
+            offset = 13
+            #何月分の作業
+            worksheet["A12"].value=exportJobList[i][0]
+            #作業内容
+            worksheet.cell(row=i+offset,column=1).value=exportJobList[i][1]
+        else:
+            offset = 12
+            #作業内容
+            worksheet.cell(row=i+offset,column=1).value=exportJobList[i][0]
+
         #作業した日付
-        worksheet.cell(row=i+12,column=2).value=exportJobList[i][2]
+        worksheet.cell(row=i+offset,column=2).value=exportJobList[i][3]
         #税率
-        tax_rate = int(exportJobList[i][3] * 100)
-        worksheet.cell(row = i + 12, column = 4).value = str(tax_rate) + "%"
+        tax_rate = int(exportJobList[i][4] * 100)
+        worksheet.cell(row = i + offset, column = 4).value = str(tax_rate) + "%"
+        
+        #offset = 13
+        #作業した日付
+        worksheet.cell(row=i+offset,column=2).value=exportJobList[i][3]
+        #税率
+        tax_rate = int(exportJobList[i][4] * 100)
+        worksheet.cell(row = i + offset, column = 4).value = str(tax_rate) + "%"
         #金額
-        worksheet.cell(row=i+12,column=5).number_format=currentJPY
-        worksheet.cell(row=i+12,column=5).value=exportJobList[i][1]
+        worksheet.cell(row=i+offset,column=5).number_format=currentJPY
+        worksheet.cell(row=i+offset,column=5).value=exportJobList[i][2]
     
     #日付を入力
     worksheet["E3"].value=str(nowDate)
@@ -51,42 +68,29 @@ def writeExcel(exportJobList,agencyName,accountName,projectName):
     worksheet["E40"].number_format=currentJPY
     worksheet["E40"].value="=SUM(E12:E39)"
 
-    #税率ごとの合計金額を計算
-    zeroTaxTotal = 0
-    lightTaxTotal = 0
-    normalTaxTotal = 0
-    #worksheetのD列を走査して、税率が8%のセルを探す
-    for i in range(12, 41):
-        if worksheet.cell(row = i, column = 4).value == "8%":
-            lightTaxTotal += worksheet.cell(row = i, column = 5).value
-        elif worksheet.cell(row = i, column = 4).value == "10%":
-            normalTaxTotal += worksheet.cell(row = i, column = 5).value
-        elif worksheet.cell(row = i, column = 4).value == "0%":
-            zeroTaxTotal += worksheet.cell(row = i, column = 5).value
-
-    #8%税率対象の合計金額をB41セルに入力
+    # 8%税率対象の合計金額
     worksheet["B41"].number_format = currentJPY
-    worksheet["B41"].value = lightTaxTotal
+    worksheet["B41"].value = '=SUMIF(D12:D39,"8%",E12:E39)'
 
     #8%税率の税額をC41セルに入力
     worksheet["C41"].number_format = currentJPY
-    worksheet["C41"].value = int(lightTaxTotal * 0.08)
+    worksheet["C41"].value = '=B41*0.08'
 
-    #10%税率対象の合計金額をB42セルに入力
+    #10%税率対象の合計金額
     worksheet["B42"].number_format = currentJPY
-    worksheet["B42"].value = normalTaxTotal
+    worksheet["B42"].value = '=SUMIF(D12:D39,"10%",E12:E39)'
 
     #10%税率の税額をC42セルに入力
     worksheet["C42"].number_format = currentJPY
-    worksheet["C42"].value = int(normalTaxTotal * 0.1)
+    worksheet["C42"].value = '=B42*0.10'
 
-    #0%税率対象の合計金額をB43セルに入力
+    #0%税率対象の合計金額
     worksheet["B43"].number_format = currentJPY
-    worksheet["B43"].value = zeroTaxTotal
+    worksheet["B43"].value = '=SUMIF(D12:D39,"0%",E12:E39)'
     
     #0%税率の税額をC43セルに入力
     worksheet["C43"].number_format = currentJPY
-    worksheet["C43"].value = int(zeroTaxTotal * 0.0)
+    worksheet["C43"].value = '=B43*0'
     
     #消費税合計金額をC44セルに入力
     worksheet["C44"].number_format = currentJPY
