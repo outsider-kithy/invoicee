@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="initial-scale=1, width=device-width">
+        <title>{% block title %}{% endblock %} - invoicee</title>
+        <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css')}}">
+    </head>
+    <body>
+        <script src="../static/js/script.js"></script>
+        <nav>
+            <h1><a href="{{ url_for('top.index') }}"><img src="../static/img/logo.png" alt="invoicee"></a></h1>
+            <a id="toggle"><span></span></a>
+            <ul id="menu">
+                {% if current_user.is_authenticated %}
+                    <li><a href="{{ url_for('top.index') }}">トップ</a></li>
+                    <li><a href="{{ url_for('project.index') }}">プロジェクトを登録</a></li>
+                    <li><a href="{{ url_for('record.index') }}">ジョブを登録</a></li>
+                    <li><a href="{{ url_for('update.index')}}">ジョブを更新</a></li>
+                    <li><a href="{{ url_for('estimate.index') }}">見積もり</a></li>
+                    <li><a href="{{ url_for('admin.index') }}">管理画面</a></li>
+                    <li><a href="{{ url_for('logout.index') }}">ログアウト</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('register.index') }}">ユーザーを登録</a></li>
+                    <li><a href="{{ url_for('login.index') }}">ログイン</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+    </body>
+    
+</html>

@@ -1,0 +1,45 @@
+{% extends "top/base.html" %}
+{% block title %}ジョブを更新ページ{% endblock %}
+
+{% block content %}
+<h3>ジョブを更新</h3>
+   
+       <p class="error">{{ error }}</p>
+       <table>
+           <thead class="items">
+               <th>選択</th>
+               <th>ジョブタイトル</th>
+               <th>プロジェクト</th>
+               <th>クライアント</th>
+               <th>代理店</th>
+               <th>作業の種類</th>
+               <th>作業内容</th>
+               <th>更新</th>
+           </thead>
+           {% for job in jobs %}
+           <form method="post" class="update">
+            <tr class="jobs">
+                <td><input type="radio" name="job" id="job" value="{{ job['id'] }}"></td>
+                <td>{{job['title']}}</td>
+                <td>{{job['project'].project_name}}</td>
+                <td>{{job['client'].client_name}}</td>
+                <td>{{job['agency'].agency_name}}</td>
+                <td>
+                    <select name="work" id="work" class="work">
+                        <option disabled selected value="">作業の種類を選択</option>
+                        {% for work in works %}
+                                <option value="{{ work['work_type'] }}">{{ work['work_type'] }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td>
+                    <label for="content"></label>
+                    <input name="content" id="content" placeholder="作業内容を入力" class="work">
+                </td>
+                <td><input type="submit" value="更新" class="update_btn"></td>
+            </tr>
+        　　</form>
+           {% endfor %}
+       </table>
+
+{% endblock %}

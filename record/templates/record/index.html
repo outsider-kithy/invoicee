@@ -1,0 +1,48 @@
+{% extends "top/base.html" %}
+{% block title %}ジョブを登録ページ{% endblock %}
+
+{% block content %}
+   <h3>ジョブを登録</h3>
+   <form method="post" class="record">
+       <label for="title">ジョブタイトル</label>
+       <input name="title" id="title" value="{{ request.form['title']}}" required placeholder="ジョブタイトル">
+
+       <select name="project" id="project">
+           <option disabled selected value="">プロジェクト名</option>
+           {% for project in projects %}
+                <option value="{{ project['project_name'] }}">{{ project['project_name'] }}</option>
+           {% endfor %}
+       </select>
+
+       <select name="tool" id="tool">
+           <option disabled selected value="">ツール名</option>
+           {% for tool in tools %}
+                <option value="{{ tool['tool_type'] }}">{{ tool['tool_type'] }}</option>
+           {% endfor %}
+       </select>
+
+       <select name="client" id="client">
+            <option disabled selected value="">クライアント</option>
+            {% for client in clients %}
+                <option value="{{ client['client_name'] }}">{{ client['client_name'] }}</option>
+            {% endfor %}
+        </select>
+
+        <select name="agency" id="agency">
+            <option disabled selected value="">代理店</option>
+            {% for agency in agencys %}
+                <option value="{{ agency['agency_name'] }}">{{ agency['agency_name'] }}</option>
+            {% endfor %}
+        </select>
+
+        <select name="account" id="account">
+            <option disabled selected value="">担当者</option>
+            {% for account in accounts %}
+                <option value="{{ account['account_name'] }}">{{ account['account_name'] }}</option>
+            {% endfor %}
+        </select>
+
+        <input type="submit" value="ジョブを登録">
+   </form>
+{% endblock %}
+

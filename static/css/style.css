@@ -1,0 +1,282 @@
+*{
+  margin:0;
+  padding:0;
+  list-style:none;
+  border:none;
+}
+
+html,body{
+  background-color:#fff;
+  color:#4d4d4d;
+  font-size:14px;
+  width:100%;
+}
+img{
+  max-width:100%;
+}
+
+a{
+  text-decoration:none;
+  color:#4d4d4d;
+}
+a:hover{
+  opacity:0.5;
+}
+a:active{
+  color:#4d4d4d;
+}
+a:visited{
+  color:#4d4d4d;
+}
+
+nav{
+  box-sizing: border-box;
+  position: fixed;
+  top: 0;
+  width:100%;
+  padding:10px 20px;
+  background-color:#eee;
+  border-bottom:2px solid #00d6ba;
+  display:flex;
+  flex-flow:row;
+  flex-wrap:nowrap;
+}
+nav > h1{
+  width:15%;
+  align-items: center;
+}
+nav > ul{
+  width:85%;
+  display:flex;
+  flex-flow:row;
+  flex-wrap:nowrap;
+  justify-content:flex-end;
+  align-items: center;
+}
+
+nav > ul > li > a{
+  display:block;
+  padding:0px 10px;
+}
+#toggle{
+  display: none;
+}
+
+/*スマホ時のトグルボタン*/
+@media screen and (max-width:940px){
+  
+  #toggle{
+      display: block;
+      cursor: pointer;
+      width: 40px;
+      height: 50px;
+      padding: 1.0em;
+      margin: 0 auto 0 0;
+      position: fixed;
+      top:0;
+      right: 0;
+      z-index: 999;
+  }
+  
+  #toggle > span{
+      display: block;
+      position: relative;
+  }
+  #toggle > span:before{
+      content:'';
+      position: absolute;
+      top:10px;
+  }
+  #toggle > span:after{
+      content:'';
+      position: absolute;
+      top: 20px;
+  }
+  
+  #toggle > span,span:before,span:after{
+      display: block;
+      width: 100%;
+      height: 3px;
+      background-color: #4d4d4d;
+      transition: all 0.3s;
+      backface-visibility: hidden;
+  }
+  
+  #toggle.open > span{
+      background-color: transparent;
+  }
+  #toggle.open > span:after{
+      transform:rotate(45deg) translate(-7px,-7px);
+  }
+  #toggle.open > span:before{
+      transform:rotate(-45deg);
+  }
+
+  nav > h1{
+      width:40%;
+  }
+  
+  nav > ul{
+      display: none;
+  }
+
+  nav > ul.open{
+      display: flex;
+      width: auto;
+      margin: 60px 0 0 auto;
+      padding: 10px;
+      flex-wrap:wrap;
+      justify-content: space-between;
+      background-color: rgba(255, 255, 255, 1);
+      position: fixed;
+      top: 0;
+      right: 0;
+      z-index: 888;
+  }
+  
+  nav > ul.open > li{
+      width: 44%;
+      margin-bottom: 10px;
+      padding: 10px;
+      border: 1px solid #4d4d4d;
+      text-align: center;
+  }
+  
+  nav > ul.open > li >a{
+      display: block;
+      color: #4d4d4d;
+      font-size: 0.8em;
+  }
+}
+
+
+
+main{
+  max-width:1200px;
+  margin:60px auto 0;
+  padding:10px;
+  overflow-x: scroll;
+}
+h2{
+  text-align:center;
+}
+h3{
+  text-align: center;
+}
+p.error{
+  margin: 0 auto;
+  text-align: center;
+  color: #f50000;
+}
+
+main > form{
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  overflow-x: scroll;
+}
+main > form.record{
+  max-width:480px;
+  margin: 20px auto;
+  padding:20px;
+  background-color:#fff;
+  border-radius:10px;
+  box-shadow:0px 0px 10px rgba(0,0,0,.3);
+}
+main > form.estimate{
+  max-width:1200px;
+  margin: 0 auto;
+  padding: 0;
+  overflow-x: scroll;
+}
+main > form.update{
+  max-width:1200px;
+  margin: 0 auto;
+  padding: 0;
+  overflow-x: scroll;
+}
+main > form > label{
+  font-weight: bold;
+  margin-bottom: 0.5em;
+  text-align:center;
+}
+main > form > input, main > form > textarea ,main > form > select{
+  min-height:2.5em;
+  margin-bottom: 1.0em;
+  border:1px solid #ccc;
+  border-radius:5px;
+  padding:0px 10px;
+}
+main > form > textarea{
+  min-height: 12em;
+  resize: vertical;
+}
+main > form > input[type=submit] {
+  align-self: center;
+  min-width: 200px;
+  margin-top:30px;
+  padding:10px;
+  border-radius:30px;
+  background-color:#00d6ba;
+  color:#fff;
+  border:none;
+  font-size:16px;
+  transition:0.5s;
+}
+main > form > input[type=submit]:hover{
+  transform:translateY(5px);
+  box-shadow:0px 0px 5px rgba(0,0,0,0.5);
+}
+.update_btn{
+  display: block;
+  background-color:#00d6ba;
+  color: #fff;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  transition: 0.5s;
+}
+.update_btn:hover{
+  transform:translateY(5px);
+  box-shadow:0px 0px 5px rgba(0,0,0,0.5);
+}
+
+table{
+  max-width: 1200px;
+  margin:0 auto;
+  overflow-x: scroll;
+}
+
+table thead.items{
+  background-color:#00d6ba;
+  color:#fff;
+}
+
+table thead.items th{
+  padding:0.5rem;
+}
+
+table tr.jobs{
+  padding:0.5rem;
+}
+
+table tr.jobs td{
+ padding:1rem;
+ text-align:center;
+ border-bottom:1px solid #4d4d4d;
+}
+
+table tr.jobs td.red{
+  color: #f50000;
+}
+table tr.jobs td.bold{
+  font-weight: bold;
+}
+table tr.jobs td.green{
+  color: #11f342;
+}
+input.work,select.work{
+  padding: 0.2rem 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}

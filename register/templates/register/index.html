@@ -1,0 +1,20 @@
+{% extends "top/base.html" %}
+{% block title %}ユーザー登録ページ{% endblock %}
+
+{% block content %}
+<h3>ユーザーを登録</h3>
+   <p class="error">{{ error }}</p>
+   <form method="post" class="record">
+       <label for="username">名前</label>
+       <input name="username" id="username" placeholder="名前" autofocus>
+
+       <label for="password">パスワード</label>
+       <input type="password" name="password" id="password" placeholder="パスワード">
+
+       <label for="confirmation">パスワード（確認用）</label>
+       <input type="password" name="confirmation" id="confirmation" placeholder="パスワード（もう一度）">
+   
+       <input type="submit" value="登録">
+    </form>
+
+{% endblock %}

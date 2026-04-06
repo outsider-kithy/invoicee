@@ -1,0 +1,36 @@
+{% extends "top/base.html" %}
+{% block title %}管理ページ{% endblock %}
+
+{% block content %}
+<h3>管理画面</h3>
+    <p class="error">{{error}}</p>
+    <form method="post" class="record">
+        <label for="client">クライアントを追加</label>
+        <input name="client" id="client" type="text" placeholder="クライアント名">
+
+        <label for="agency">代理店を追加</label>
+        <input name="agency" id="agency" type="text" placeholder="代理店名">
+
+        <label for="account">担当者を追加</label>
+        <input name="account" id="account" type="text" placeholder="担当者名">
+        <select name="agencyName" id="agencyName">
+            <option disabled selected value="">代理店を選択</option>
+            {% for agency in agencys %}
+                <option value="{{agency['agency_name']}}">{{agency['agency_name']}}</option>
+            {% endfor %}
+        </select>
+
+        <label for="tool">ツールを追加</label>
+        <input name="tool" id="tool" type="text" placeholder="ツール名">
+        <input name="price" id="price" type="text" placeholder="価格"> 
+        <select name="tax" id="tax">
+            <option disabled selected value="">税率を選択</option>
+            {% for tax in taxes %}
+                <option value="{{tax['rate']}}">{{tax['rate'] * 100}} %</option>
+            {% endfor %}
+        </select>
+        <input type="submit" value="登録する">
+        
+    </form>
+
+{% endblock %}

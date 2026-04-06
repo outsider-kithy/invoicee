@@ -1,0 +1,38 @@
+{% extends "top/base.html" %}
+{% block title %}トップページ{% endblock %}
+
+{% block content %}
+<h2>トップページ</h2>
+<table>
+    <thead class="items">
+        <th>ジョブタイトル</th>
+        <th>プロジェクト名</th>
+        <th>受注日</th>
+        <th>クライアント</th>
+        <th>代理店</th>
+        <th>価格</th>
+        <th>見積書</th>
+    </thead>
+        {% for job in jobs %}
+        <tr class="jobs">  
+            <td>{{job['title']}}</td>
+
+            <td>{{job['project'].project_name}}</td>
+
+            <td>{{job['created']}}</td>
+
+            <td>{{job['client'].client_name}}</td>
+
+            <td>{{job['agency'].agency_name}}</td>
+        
+            <td>{{ "¥{:,d}".format(job['price']) }}</td>
+
+            {% if job['estimated']==0 %}
+                <td class="red bold">未</td>
+            {% else %}
+                <td class="green bold">済</td>
+            {% endif %}
+        </tr>
+    {% endfor %}
+</table>
+{% endblock %}
