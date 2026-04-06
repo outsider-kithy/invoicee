@@ -3,6 +3,14 @@ import openpyxl
 import datetime
 from flask import make_response
 import shutil
+from dotenv import load_dotenv
+
+# EXCEL出力先
+ENV_MODE = os.getenv("ENV_MODE", "development")
+DOTENV_FILE = f".env.{ENV_MODE}"
+load_dotenv(dotenv_path=DOTENV_FILE)
+TEMPLATE_FILE = os.getenv("TEMPLATE_FILE")
+OUTPUT_DIR = os.getenv("OUTPUT_DIR")
 
 #ユーザー定義フォーマットを追加
 currentJPY='"¥"#,##0'
@@ -11,17 +19,11 @@ def writeExcel(exportJobList,agencyName,accountName,projectName):
     #今日の日付を取得して発行日として入力
     nowDate=datetime.date.today()
 
-    #開発用URL
-    # templatefile = 'estimate_template.xlsx'
-    # outputfile = str(nowDate) + '-estimate.xlsx'
+    OUTPUT_FILE = OUTPUT_DIR + str(nowDate) + '-estimate.xlsx'
 
-    #本番URL
-    templatefile = '/var/www/html/estimate_template.xlsx'
-    outputfile = '/var/www/html/' + str(nowDate) + '-estimate.xlsx'
+    shutil.copy(TEMPLATE_FILE,OUTPUT_FILE)
 
-    shutil.copy(templatefile,outputfile)
-
-    workbook = openpyxl.load_workbook(outputfile)
+    workbook = openpyxl.load_workbook(OUTPUT_FILE)
     worksheet=workbook.get_sheet_by_name(u'シート1')
 
     #各項目と金額を入力
@@ -86,13 +88,13 @@ def writeExcel(exportJobList,agencyName,accountName,projectName):
     worksheet["C43"].number_format = currentJPY
     worksheet["C43"].value = int(zeroTaxTotal * 0.0)
     
-    #消費税合計金額をB44セルに入力
-    worksheet["B44"].number_format = currentJPY
-    worksheet["B44"].value = "=SUM(B41:B43)"
+    #消費税合計金額をC44セルに入力
+    worksheet["C44"].number_format = currentJPY
+    worksheet["C44"].value = "=SUM(C41:C43)"
 
-    #消費税込み合計金額をE42セルに入力
-    worksheet["E42"].number_format = currentJPY
-    worksheet["E42"].value = "=SUM(E41,B44)"
+    #消費税合計金額をE41セルに入力
+    worksheet["E41"].number_format = currentJPY
+    worksheet["E41"].value = "=SUM(C41:C43)"
 
     #消費税込み合計金額を入力
     worksheet["E42"].number_format=currentJPY
@@ -102,18 +104,18 @@ def writeExcel(exportJobList,agencyName,accountName,projectName):
     worksheet["B7"].value="=SUM(E40:E41)"
    
     #新しいファイルとして保存する
-    workbook.save(outputfile)
+    workbook.save(OUTPUT_FILE)
     workbook.close()
     
     XLSX_MIMETYPE="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 
     response=make_response()
 
-    workbook=open(outputfile,"rb")
+    workbook=open(OUTPUT_FILE,"rb")
     response.data=workbook.read()
     workbook.close()
 
     response.headers["Content-Disposition"]="attachment; filename=" + str(nowDate)+"-estimate.xlsx"
     response.mimetype=XLSX_MIMETYPE
-    os.remove(outputfile)
+    os.remove(OUTPUT_FILE)
     return response

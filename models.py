@@ -1,18 +1,18 @@
 import os
 from sqlalchemy import Column,Integer,Numeric,String,ForeignKey,create_engine
-from sqlalchemy.orm import relationship,session,sessionmaker
+from sqlalchemy.orm import relationship,sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 import datetime
-from sqlalchemy.sql.expression import column
 from sqlalchemy.sql.sqltypes import Date
 from flask_login import UserMixin
+from dotenv import load_dotenv
 
+# データベース
+ENV_MODE = os.getenv("ENV_MODE", "development")
+DOTENV_FILE = f".env.{ENV_MODE}"
+load_dotenv(dotenv_path=DOTENV_FILE)
+DATABASE_URL = os.getenv("DATABASE_URL")
 
-#データベース関係の設定
-#開発用URL
-DATABASE_URL='postgresql://localhost/invoicee'
-#本番用URL
-#DATABASE_URL='postgresql://postgres:secret@localhost:5432/invoicee?client_encoding=utf8'
 engine=create_engine(DATABASE_URL,isolation_level='AUTOCOMMIT')
 Base=declarative_base()
 db_uri = os.environ.get(DATABASE_URL)

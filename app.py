@@ -4,14 +4,15 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import session
 from sqlalchemy.ext.declarative import declarative_base
 from flask_login import LoginManager,login_manager
-
+from dotenv import load_dotenv
 from models import session,User
 
-#データベース関係の設定
-#開発用データベース
-DATABASE_URL='postgresql://localhost/invoicee'
-#本番用データベース
-#DATABASE_URL='postgresql://postgres:secret@localhost:5432/invoicee?client_encoding=utf8'
+# データベース
+ENV_MODE = os.getenv("ENV_MODE", "development")
+DOTENV_FILE = f".env.{ENV_MODE}"
+load_dotenv(dotenv_path=DOTENV_FILE)
+DATABASE_URL = os.getenv("DATABASE_URL")
+
 engine=create_engine(DATABASE_URL,isolation_level='AUTOCOMMIT')
 Base=declarative_base()
 db_uri = os.environ.get(DATABASE_URL)
