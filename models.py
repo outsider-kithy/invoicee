@@ -43,6 +43,7 @@ class Job(Base):
     price=Column(Integer)
     estimated=Column(Integer)
     invoiced=Column(Integer)
+    github_repository = Column(String)
 
     tool_type=relationship("Tool")
     client=relationship("Client")

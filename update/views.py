@@ -1,7 +1,7 @@
 from flask import redirect,render_template,request,url_for,flash,Blueprint
 from flask_login import login_required
 
-from models import session,Job,Client,Agency,Project,Work,Content,Tax
+from models import session,Job,Client,Agency,Project,Work
 
 update = Blueprint(
     "update",
@@ -20,39 +20,13 @@ def index():
 
     elif request.method=='POST':
         error=None
-        selectedJobId=request.form['job']
-        # print(selectedJobId)
-        # work_type=request.form['work']
-        # content=request.form['content']
+        selectedJobId=request.form['jobId']
 
         if not selectedJobId:
             error="ジョブが選択されていません"
             flash(error)
-        # elif not work_type:
-        #     error="作業の種類が選択されていません"
-        #     flash(error)
-        # elif not content:
-        #     error="作業内容が入力されていません"
-        #     flash(error)
         
-        #選択したjobからjobIdを取得
-        #jobId=None
-        job_id=session.query(Job).filter(Job.id==selectedJobId)
-        # for i in job_id:
-        #     jobId=i.id
         session.close()
-        
-        #選択した作業の種類からwork_typeIdを取得
-        #print(work_type)
-        # workTypeId=None
-        # work_typeId=session.query(Work).filter(Work.work_type==work_type)
-        # for j in work_typeId:
-        #     workTypeId=j.id
-        # session.close()
-
-    #contentsテーブルに新しく作業内容を追加
-    # session.add(Content(job_id=jobId,work_id=workTypeId,work_content=content,tax_rate_id=3))
-    # session.commit()
 
     # /detailルートに遷移
     return redirect(url_for('detail.index', selectedJobId=selectedJobId))

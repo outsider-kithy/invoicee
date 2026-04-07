@@ -13,20 +13,21 @@
                <th>代理店</th>
                <th>詳細</th>
            </thead>
-           <form method="post" class="update">
+           
            {% for job in jobs %}
+           <form method="post" class="update">
             <tr class="jobs">
                 <td>{{job['title']}}</td>
                 <td>{{job['project'].project_name}}</td>
                 <td>{{job['client'].client_name}}</td>
                 <td>{{job['agency'].agency_name}}</td>
                 <td>
-                    <input type="hidden" name="job" id="job" value="{{ job['id'] }}">
+                    <input type="hidden" name="jobId" value="{{ job['id'] }}">
                     <input type="submit" value="詳細" class="update_btn">
                 </td>
             </tr>
+            </form>
            {% endfor %}
-           </form>
        </table>
 
 {% endblock %}

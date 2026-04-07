@@ -1,7 +1,6 @@
-from flask import Flask,redirect,render_template,request,url_for,flash,Blueprint
+from flask import redirect,render_template,request,url_for,flash,Blueprint
 from flask_login import login_required
-
-from models import session,Job,Client,Agency,Project,Tool,Account
+from models import session,Job,Project,Tool
 
 record = Blueprint(
     "record",
@@ -15,15 +14,13 @@ def index():
     if request.method=='GET':
         projects=session.query(Project).all()
         tools=session.query(Tool).all()
-        clients=session.query(Client).all()
-        agencys=session.query(Agency).all()
-        accounts=session.query(Account).all()
-        return render_template("record/index.html",projects=projects,tools=tools,clients=clients,agencys=agencys,accounts=accounts)
+        return render_template("record/index.html",projects=projects,tools=tools)
 
     elif request.method=='POST':
         title=request.form['title']
         project=request.form['project']
         tool=request.form['tool']
+        github_repository=request.form['github_repository']
         error=None
         
         if not title:
@@ -70,7 +67,8 @@ def index():
                     project_id=projectId,
                     price=price,
                     estimated=0,
-                    invoiced=0
+                    invoiced=0,
+                    github_repository=github_repository
                 ))
                 session.commit()
 

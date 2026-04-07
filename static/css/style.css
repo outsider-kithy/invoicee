@@ -249,7 +249,7 @@ input[type=submit]:hover{
 }
 
 table{
-  max-width: 1200px;
+  width: 1200px;
   margin:0 auto;
   overflow-x: scroll;
 }
@@ -279,7 +279,12 @@ table tr.jobs td{
  text-align:center;
  border-bottom:1px solid #4d4d4d;
 }
-
+table tr.jobs td.date{
+  width: 200px;
+}
+table tr.jobs td.work{
+  width: 200px;
+}
 table tr.jobs td.red{
   color: #f50000;
 }
@@ -289,8 +294,9 @@ table tr.jobs td.bold{
 table tr.jobs td.green{
   color: #11f342;
 }
-input.work,input.content,input.price,select.work{
-  padding: 0.2rem 0.5rem;
+input.work,input.content,input.price, select.work{
+  width: 100%;
+  padding: 0.5rem;
   border: 1px solid #ccc;
   border-radius: 5px;
 }

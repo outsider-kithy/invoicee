@@ -1,0 +1,23 @@
+{% extends "top/base.html" %}
+{% block title %}コミットログページ{% endblock %}
+
+{% block content %}
+<h3>{{ job.title }} のコミット履歴</h3>
+
+<table>
+    <thead class="items">
+        <tr>
+            <th>コミット日時</th>
+            <th>コミットメッセージ</th>
+        </tr>
+    </thead>
+
+    {% for commit in commits %}
+    <tr class="jobs">
+        <td>{{ commit['date'] }}</td>
+        <td>{{ commit['message'] }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

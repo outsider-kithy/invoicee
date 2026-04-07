@@ -16,17 +16,24 @@
 
         {% for content in contents %}
         <tr class="jobs">
-            <td>{{ content['created'] }}</td>
-            <td>
+            <td class="date">
+                {% if content['created'] %}
+                    {{ content['created'] }}
+                {% endif %}
+            </td>
+            <td class="work">
+                {% if content['work'] %}
                 <select name="update_work[]" class="work">
                     <option selected value="{{ content['work'].work_type }}">{{ content['work'].work_type }}</option>
                     {% for work in works %}
                         <option value="{{ work['work_type'] }}">{{ work['work_type'] }}</option>
                     {% endfor %}
                 </select>
-                
+                {% else %}
+                {% endif %}
             </td>
-            <td>
+            <td class="content">
+                {% if content['work_content'] %}
                 <label for="update_content[]"></label>
                 <input 
                     name="update_content[]" 
@@ -34,9 +41,14 @@
                     placeholder="{{ content['work_content'] }}" 
                     class="work"
                     value="{{ content['work_content'] }}">
+                {% else %}
+                {% endif %}
             </td>
             <td>
+                {% if content['work'].price %}
                 {{ '¥{:,d}'.format(content['work'].price) }}
+                {% else %}
+                {% endif %}
             </td>
         </tr>
         {% endfor %}
@@ -44,7 +56,11 @@
             <td></td>
             <td></td>
             <td>合計</td>
-            <td>{{ '¥{:,d}'.format(total_price) }}</td>
+            {% if total_price %}
+                <td>{{ '¥{:,d}'.format(total_price) }}</td>
+            {% else %}
+                <td>¥0</td>
+            {% endif %}
         </tr>
     </table>
     <input type="hidden" name="update_job_id" value="{{selectedJob['id']}}">
