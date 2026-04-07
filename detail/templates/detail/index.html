@@ -5,25 +5,50 @@
 <h3>ジョブの詳細</h3>
 <h4>{{ selectedJob['project'].project_name }} | {{ selectedJob['title'] }} </h4>
 
-<table>
-    <thead class="items">
-        <th>作業日</th>
-        <th>作業タイプ</th>
-        <th>作業内容</th>
-        <th>金額</th>
-    </thead>
+<form method="POST">
+    <table>
+        <thead class="items">
+            <th>作業日</th>
+            <th>作業タイプ</th>
+            <th>作業内容</th>
+            <th>金額</th>
+        </thead>
 
-    <form>
-    {% for content in contents %}
-    <tr class="jobs">
-        <td>{{ content['created'] }}</td>
-        <td>{{ content['work'].work_type }}</td>
-        <td>{{ content['work_content'] }}</td>
-        <td>{{ "¥{:,d}".format(content['work'].price) }}</td>
-    </tr>
-    {% endfor %}
-    </form>
-</table>
-
+        {% for content in contents %}
+        <tr class="jobs">
+            <td>{{ content['created'] }}</td>
+            <td>
+                <select name="update_work[]" class="work">
+                    <option selected value="{{ content['work'].work_type }}">{{ content['work'].work_type }}</option>
+                    {% for work in works %}
+                        <option value="{{ work['work_type'] }}">{{ work['work_type'] }}</option>
+                    {% endfor %}
+                </select>
+                
+            </td>
+            <td>
+                <label for="update_content[]"></label>
+                <input 
+                    name="update_content[]" 
+                    class="content" 
+                    placeholder="{{ content['work_content'] }}" 
+                    class="work"
+                    value="{{ content['work_content'] }}">
+            </td>
+            <td>
+                {{ '¥{:,d}'.format(content['work'].price) }}
+            </td>
+        </tr>
+        {% endfor %}
+        <tr class="total_price">
+            <td></td>
+            <td></td>
+            <td>合計</td>
+            <td>{{ '¥{:,d}'.format(total_price) }}</td>
+        </tr>
+    </table>
+    <input type="hidden" name="update_job_id" value="{{selectedJob['id']}}">
+    <input type="submit" class="center_btn" value="更新する">
+</form>
 
 {% endblock %}

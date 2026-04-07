@@ -216,11 +216,11 @@ main > form > textarea{
   min-height: 12em;
   resize: vertical;
 }
-main > form > input[type=submit] {
+input[type=submit] {
   align-self: center;
-  min-width: 200px;
-  margin-top:30px;
-  padding:10px;
+  /* min-width: 200px; */
+  /* margin-top:30px; */
+  padding:0.5rem 2.0rem;
   border-radius:30px;
   background-color:#00d6ba;
   color:#fff;
@@ -228,7 +228,7 @@ main > form > input[type=submit] {
   font-size:16px;
   transition:0.5s;
 }
-main > form > input[type=submit]:hover{
+input[type=submit]:hover{
   transform:translateY(5px);
   box-shadow:0px 0px 5px rgba(0,0,0,0.5);
 }
@@ -243,6 +243,9 @@ main > form > input[type=submit]:hover{
 .update_btn:hover{
   transform:translateY(5px);
   box-shadow:0px 0px 5px rgba(0,0,0,0.5);
+}
+.center_btn{
+  margin: 10px auto;
 }
 
 table{
@@ -259,9 +262,16 @@ table thead.items{
 table thead.items th{
   padding:0.5rem;
 }
-
+table > td.w100{
+  width: 100%;
+  margin: 0 auto;
+}
 table tr.jobs{
   padding:0.5rem;
+}
+table tr.total_price td{
+  padding:0.5rem;
+  text-align: center;
 }
 
 table tr.jobs td{
@@ -279,7 +289,7 @@ table tr.jobs td.bold{
 table tr.jobs td.green{
   color: #11f342;
 }
-input.work,select.work{
+input.work,input.content,input.price,select.work{
   padding: 0.2rem 0.5rem;
   border: 1px solid #ccc;
   border-radius: 5px;
