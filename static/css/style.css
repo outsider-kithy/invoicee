@@ -236,13 +236,18 @@ input[type=submit]:hover{
   display: block;
   background-color:#00d6ba;
   color: #fff;
-  border-radius: 0.5rem;
-  padding: 0.5rem;
+  padding:0.5rem 2.0rem;
+  border-radius:30px;
   transition: 0.5s;
+  text-align: center;
 }
 .update_btn:hover{
   transform:translateY(5px);
+  color: #fff;
   box-shadow:0px 0px 5px rgba(0,0,0,0.5);
+}
+.update_btn:visited{
+  color: #fff;
 }
 .center_btn{
   margin: 10px auto;
@@ -295,8 +300,20 @@ table tr.jobs td.green{
   color: #11f342;
 }
 input.work,input.content,input.price, select.work{
+  display: block;
   width: 100%;
   padding: 0.5rem;
   border: 1px solid #ccc;
   border-radius: 5px;
+}
+.col2{
+  width: 740px;
+  margin: 0 auto 90px;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+}
+.col2 > a, input{
+  width: 48%;
+  margin: 0 1%;
 }

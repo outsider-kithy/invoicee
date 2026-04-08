@@ -64,7 +64,12 @@
         </tr>
     </table>
     <input type="hidden" name="update_job_id" value="{{selectedJob['id']}}">
-    <input type="submit" class="center_btn" value="更新する">
+
+    <div class="col2">
+        <a href="/commitlog/?selectedJobId={{selectedJob['id']}}" class="update_btn">コミットログを見る</a>
+        <input type="submit" value="更新する">
+    </div>
+    
 </form>
 
 {% endblock %}

@@ -45,6 +45,9 @@ def create_app():
     from commitlog import views as commitlog_views
     app.register_blueprint(commitlog_views.commitlog, url_prefix="/commitlog")
 
+    from webhook import views as webhook_views
+    app.register_blueprint(webhook_views.webhook, url_prefix="/webhook")
+
     from estimate import views as estimate_views
     app.register_blueprint(estimate_views.estimate, url_prefix="/estimate")
 
