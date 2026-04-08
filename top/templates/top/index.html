@@ -13,26 +13,35 @@
         <th>価格</th>
         <th>見積書</th>
     </thead>
-        {% for job in jobs %}
+        {% for item in job_list %}
         <tr class="jobs">  
-            <td>{{job['title']}}</td>
+            <td>{{item.job.title}}</td>
 
-            <td>{{job['project'].project_name}}</td>
+            <td>{{item.job.project.project_name}}</td>
 
-            <td>{{job['created']}}</td>
+            <td>{{item.job.created}}</td>
 
-            <td>{{job['client'].client_name}}</td>
+            <td>{{item.job.client.client_name}}</td>
 
-            <td>{{job['agency'].agency_name}}</td>
+            <td>{{item.job.agency.agency_name}}</td>
         
-            <td>{{ "¥{:,d}".format(job['price']) }}</td>
+            <td>{{ "¥{:,d}".format(item.current_price) }}円</td>
 
-            {% if job['estimated']==0 %}
+            {% if item.job.estimated == 0 %}
                 <td class="red bold">未</td>
             {% else %}
                 <td class="green bold">済</td>
             {% endif %}
         </tr>
     {% endfor %}
+
+    <tr class="monthly_total_price">
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>未見積合計金額</td>
+        <td>{{ "¥{:,d}".format(monthly_total_price) }}円</td>
+    </tr>
 </table>
 {% endblock %}
