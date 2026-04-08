@@ -2,32 +2,31 @@
 {% block title %}ジョブを更新ページ{% endblock %}
 
 {% block content %}
-<h3>ジョブを更新</h3>
-   
-       <p class="error">{{ error }}</p>
-       <table>
-           <thead class="items">
-               <th>ジョブタイトル</th>
-               <th>プロジェクト</th>
-               <th>クライアント</th>
-               <th>代理店</th>
-               <th>詳細</th>
-           </thead>
-           
-           {% for job in jobs %}
-           <form method="post" class="update">
-            <tr class="jobs">
-                <td>{{job['title']}}</td>
-                <td>{{job['project'].project_name}}</td>
-                <td>{{job['client'].client_name}}</td>
-                <td>{{job['agency'].agency_name}}</td>
-                <td>
-                    <input type="hidden" name="jobId" value="{{ job['id'] }}">
-                    <input type="submit" value="詳細" class="update_btn">
-                </td>
-            </tr>
-            </form>
-           {% endfor %}
-       </table>
+<h2>ジョブを更新</h2>
+<p class="error">{{ error }}</p>
+<table>
+    <thead class="items">
+        <th>ジョブタイトル</th>
+        <th>プロジェクト</th>
+        <th>クライアント</th>
+        <th>代理店</th>
+        <th>詳細</th>
+    </thead>
+    
+    {% for job in jobs %}
+    <form method="post" class="update">
+    <tr class="jobs">
+        <td>{{job['title']}}</td>
+        <td>{{job['project'].project_name}}</td>
+        <td>{{job['client'].client_name}}</td>
+        <td>{{job['agency'].agency_name}}</td>
+        <td>
+            <input type="hidden" name="jobId" value="{{ job['id'] }}">
+            <input type="submit" value="詳細" class="update_btn">
+        </td>
+    </tr>
+    </form>
+    {% endfor %}
+</table>
 
 {% endblock %}

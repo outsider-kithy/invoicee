@@ -2,9 +2,9 @@
 {% block title %}ジョブの詳細ページ{% endblock %}
 
 {% block content %}
-<h3>ジョブの詳細</h3>
-<h4>{{ selectedJob['project'].project_name }} | {{ selectedJob['title'] }} </h4>
-
+<h2>ジョブの詳細</h2>
+<h3>{{ selectedJob['project'].project_name }} | {{ selectedJob['title'] }} </h3>
+<p class="error"></p>
 <form method="POST">
     <table>
         <thead class="items">

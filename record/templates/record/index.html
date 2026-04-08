@@ -2,29 +2,30 @@
 {% block title %}ジョブを登録ページ{% endblock %}
 
 {% block content %}
-   <h3>ジョブを登録</h3>
-   <form method="post" class="record">
-       <label for="title">ジョブタイトル</label>
-       <input name="title" id="title" value="{{ request.form['title']}}" required placeholder="ジョブタイトル">
+<h2>ジョブを登録</h2>
+<p class="error"></p>
+<form method="post" class="record">
+    <label for="title">ジョブタイトル</label>
+    <input name="title" id="title" value="{{ request.form['title']}}" required placeholder="ジョブタイトル">
 
-       <select name="project" id="project">
-           <option disabled selected value="">プロジェクト名</option>
-           {% for project in projects %}
-                <option value="{{ project['project_name'] }}">{{ project['project_name'] }}</option>
-           {% endfor %}
-       </select>
+    <select name="project" id="project">
+        <option disabled selected value="">プロジェクト名</option>
+        {% for project in projects %}
+            <option value="{{ project['project_name'] }}">{{ project['project_name'] }}</option>
+        {% endfor %}
+    </select>
 
-       <select name="tool" id="tool">
-           <option disabled selected value="">ツール名</option>
-           {% for tool in tools %}
-                <option value="{{ tool['tool_type'] }}">{{ tool['tool_type'] }}</option>
-           {% endfor %}
-       </select>
+    <select name="tool" id="tool">
+        <option disabled selected value="">ツール名</option>
+        {% for tool in tools %}
+            <option value="{{ tool['tool_type'] }}">{{ tool['tool_type'] }}</option>
+        {% endfor %}
+    </select>
 
-       <label for="github_repository">GitHubリポジトリ</label>
-       <input type="text" name="github_repository" placeholder="(ex.)outsider-kithy/repository_name">
+    <label for="github_repository">GitHubリポジトリ</label>
+    <input type="text" name="github_repository" placeholder="(ex.)outsider-kithy/repository_name">
 
-        <input type="submit" value="ジョブを登録">
-   </form>
+    <input type="submit" value="ジョブを登録">
+</form>
 {% endblock %}
 

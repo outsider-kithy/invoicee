@@ -2,16 +2,16 @@
 {% block title %}ログインページ{% endblock %}
 
 {% block content %}
-<h3>ログイン</h3>
-   <p class="error">{{ error }}</p>
-   <form method="post" class="record">
-       <label for="username">名前</label>
-       <input name="username" id="username">
+<h2>ログイン</h2>
+<p class="error">{{ error }}</p>
+<form method="post" class="record">
+    <label for="username">名前</label>
+    <input name="username" id="username">
 
-       <label for="password">パスワード</label>
-       <input type="password" name="password" id="password">
+    <label for="password">パスワード</label>
+    <input type="password" name="password" id="password">
 
-       <input type="submit" value="ログイン">
-   </form>
+    <input type="submit" value="ログイン">
+</form>
 
 {% endblock %}

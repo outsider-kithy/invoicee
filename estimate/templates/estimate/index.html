@@ -2,35 +2,36 @@
 {% block title %}見積もりを出力ページ{% endblock %}
 
 {% block content %}
-<h3>見積もりを出力</h3>
-   <form method="post" class="estimate">
-       <table>
-           <thead class="items">
-               <th>選択</th>
-               <!-- <th>ID</th> -->
-               <th>ジョブタイトル</th>
-               <th>プロジェクト</th>
-               <th>クライアント</th>
-               <th>代理店</th>
-               <th>受注日</th>
-               <th>価格</th>
-           </thead>
-           {% for job in jobs %}
-           <tr class="jobs">
-               <td><input type="radio" name="job" id="job" value="{{ job['id'] }}"></td>
-               <label for="job">
-                   <!-- <td>{{ job['id'] }}</td> -->
-                   <td>{{ job['title'] }}</td>
-                   <td>{{ job['project'].project_name}}</td>
-                   <td>{{job['client'].client_name}}</td>
-                   <td>{{job['agency'].agency_name}}</td>
-                   <td>{{ job['created'] }}</td>
-                   <td>{{ "¥{:,d}".format(job['price']) }}</td>
-               </label>
-           </tr>
-           {% endfor %}
-       </table>
-       <input type="submit" class="center_btn" value="見積もりを出力">
-   </form>
+<h2>見積もりを出力</h2>
+<p class="error"></p>
+<form method="post" class="estimate">
+    <table>
+        <thead class="items">
+            <th>選択</th>
+            <!-- <th>ID</th> -->
+            <th>ジョブタイトル</th>
+            <th>プロジェクト</th>
+            <th>クライアント</th>
+            <th>代理店</th>
+            <th>受注日</th>
+            <th>価格</th>
+        </thead>
+        {% for job in jobs %}
+        <tr class="jobs">
+            <td><input type="radio" name="job" id="job" value="{{ job['id'] }}"></td>
+            <label for="job">
+                <!-- <td>{{ job['id'] }}</td> -->
+                <td>{{ job['title'] }}</td>
+                <td>{{ job['project'].project_name}}</td>
+                <td>{{job['client'].client_name}}</td>
+                <td>{{job['agency'].agency_name}}</td>
+                <td>{{ job['created'] }}</td>
+                <td>{{ "¥{:,d}".format(job['price']) }}</td>
+            </label>
+        </tr>
+        {% endfor %}
+    </table>
+    <input type="submit" class="center_btn" value="見積もりを出力">
+</form>
 
 {% endblock %}
