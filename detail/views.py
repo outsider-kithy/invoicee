@@ -67,9 +67,46 @@ def index():
                 .first()
             )
 
-            # Contentテーブル更新
+            # Contentテーブルを更新
             content_record.work_id = work_record.id
             content_record.work_content = work_content
+
+            #session.commit()
+
+        # 新しい作業内容を登録
+        new_works = request.form.getlist("new_work[]")
+        new_contents = request.form.getlist("new_content[]")
+
+        print(new_works)
+        print(new_contents)
+
+        if new_works and new_contents:
+
+            for work_type, work_content in zip(new_works, new_contents):
+
+                # 作業内容が空欄ならスキップ
+                if not work_content.strip():
+                    continue
+
+                # 選択された work_type に対応する Work レコードを取得
+                work_record = (
+                    session.query(Work)
+                    .filter(Work.work_type == work_type)
+                    .first()
+                )
+
+                # work_type が見つからない場合はスキップ
+                if not work_record:
+                    continue
+
+                # Contentテーブルに新しいレコードを追加
+                new_content = Content(
+                    job_id=update_job_id,
+                    work_id=work_record.id,
+                    work_content=work_content.strip()
+                )
+
+                session.add(new_content)
 
             session.commit()
 

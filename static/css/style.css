@@ -14,7 +14,9 @@ html,body{
 img{
   max-width:100%;
 }
-
+button{
+  background-color: transparent;
+}
 a{
   text-decoration:none;
   color:#4d4d4d;
@@ -327,4 +329,70 @@ input.work,input.content,input.price, select.work{
 .col2 > a, .col2 > input{
   width: 48%;
   margin: 0 1%;
+}
+
+
+/* table tr.inputField {
+  margin: 0 0 10px;
+  padding: 0.5rem;
+  background-color: #fff;
+  border-radius: 0.2rem;
+  text-align: left;
+}
+table tr.inputField th {
+  width: 70%;
+  border: 1px solid #ccc;
+  padding: 1rem;
+}
+table tr.inputField td {
+  width: 30%;
+  border: 1px solid #ccc;
+  padding: 1rem;
+} */
+
+.addFieldBtn, .addTableBtn {
+  display: block;
+  margin: 0 0 0 auto;
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.addFieldBtn:before, .addTableBtn:before {
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  margin: 0 3px 0 0;
+  padding: 0.2rem;
+  line-height: 1.0em;
+  font-size: 2.0rem;
+  content: "+";
+  background-color: #00d6ba;
+  color: #fff;
+  border-radius: 50%;
+}
+.addFieldBtn:hover, .addTableBtn:hover {
+  transform: translateY(5px);
+}
+
+.deleteFieldBtn, .deleteTableBtn {
+  display: block;
+  margin: 0 0 0 auto;
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.deleteFieldBtn:before, .deleteTableBtn:before {
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  margin: 0 3px 0 0;
+  line-height: 1.0em;
+  font-size: 2.0rem;
+  content: "-";
+  background-color: #00d6ba;
+  color: #fff;
+  border-radius: 50%;
+}
+.deleteFieldBtn:hover, .deleteTableBtn:hover {
+  transform: translateY(5px);
 }

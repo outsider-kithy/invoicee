@@ -63,6 +63,32 @@
             {% endif %}
         </tr>
     </table>
+
+    <!--作業内容の新規登録-->
+    <table class="inputFields">
+        <tr class="inputField jobs">
+            <td></td>
+            <td class="works">
+                <select name="new_work[]" class="work">
+                    {% for work in works %}
+                    <option selected value="{{ work.work_type }}">{{ work.work_type }}</option>
+                    {% endfor %}
+                </select>               
+            </td>
+            <td class="content">
+                <input type="text" name="new_content[]" class="content" placeholder="作業内容を入力">
+            </td>
+            <td>
+                <!--input要素を削除するボタン-->
+                <button class="deleteFieldBtn"></button>
+            </td>
+        </tr>
+    </table>
+
+    <!--input要素を追加するボタン-->
+    <button class="addFieldBtn"></button>
+
+    <!--job id-->
     <input type="hidden" name="update_job_id" value="{{selectedJob['id']}}">
 
     <div class="col2">
@@ -71,5 +97,8 @@
     </div>
     
 </form>
+
+
+<script src="../static/js/detail.js"></script>
 
 {% endblock %}
