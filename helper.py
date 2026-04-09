@@ -43,6 +43,7 @@ def writeExcel(exportJobList,agencyName,accountName,projectName):
         #作業した日付
         worksheet.cell(row=i+offset,column=2).value=exportJobList[i][3]
         #税率
+        print(exportJobList[i][4])
         tax_rate = int(exportJobList[i][4] * 100)
         worksheet.cell(row = i + offset, column = 4).value = str(tax_rate) + "%"
         
@@ -50,6 +51,7 @@ def writeExcel(exportJobList,agencyName,accountName,projectName):
         #作業した日付
         worksheet.cell(row=i+offset,column=2).value=exportJobList[i][3]
         #税率
+        print(exportJobList[i][4])
         tax_rate = int(exportJobList[i][4] * 100)
         worksheet.cell(row = i + offset, column = 4).value = str(tax_rate) + "%"
         #金額

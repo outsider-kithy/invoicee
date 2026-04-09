@@ -22,7 +22,8 @@ def index():
     elif request.method=='POST':
         project=request.form['project']
         projectClientName=request.form['projectClientName']
-        projectAgencyName=request.form['projectAgencyName']
+        projectAgencyId=request.form['projectAgencyId']
+        projectAgencyName = session.query(Agency).filter(Agency.id == projectAgencyId).first()
         projectAccountName=request.form['projectAccountName']
         error=None
         
@@ -39,16 +40,16 @@ def index():
         else:
             # projectId=None
             projectClientId=None
-            projectAgencyId=None
+            #projectAgencyId=None
             projectAccountId=None
             #POSTされてきたprojectClientNameからclient_idを検索
             c=session.query(Client).filter(Client.client_name==projectClientName)
             for j in c:
                 projectClientId=j.id
             #POSTされてきたprojectAgencyNameからagency_idを検索
-            ai=session.query(Agency).filter(Agency.agency_name==projectAgencyName)
-            for k in ai:
-                projectAgencyId=k.id
+            # ai=session.query(Agency).filter(Agency.agency_name==projectAgencyName)
+            # for k in ai:
+            #     projectAgencyId=k.id
             #POSTされてきたprojectAccountNameからaccount_idを検索
             aci=session.query(Account).filter(Account.account_name==projectAccountName)
             for l in aci:

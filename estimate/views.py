@@ -20,6 +20,7 @@ def index():
     
     elif request.method=='POST':
         estimateJobIds=request.form.getlist('job')
+
         exportJobList=[]
         for i in estimateJobIds:
             exportJob=session.query(Job).join(Tool).filter(Job.id==i).all()
@@ -34,7 +35,7 @@ def index():
                     exportContents=None
                     exportContentsPrice=None
                     exportContentsCreated=None
-                    exportContentTaxRate = None
+                    exportContentsTaxRate = None
                     contents=session.query(Content).join(Work).join(Tax).filter(Content.job_id==i).all()
 
                     for k in contents:
@@ -42,14 +43,14 @@ def index():
                         exportContentsPrice=k.work.price
                         exportContentsCreated=k.created
                         #税率
-                        exportContentTaxRate = k.tax_rate.rate
+                        exportContentsTaxRate = k.work.tax_rate.rate
                       
                         exportJobList.append([
                             exportJobTitle,
                             exportContents,
                             exportContentsPrice,
                             exportContentsCreated,
-                            exportContentTaxRate
+                            exportContentsTaxRate
                             ])
                 
                 #jobが紙媒体であればjobタイトルのみを記載

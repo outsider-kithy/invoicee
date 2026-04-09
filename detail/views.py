@@ -1,4 +1,4 @@
-from flask import render_template,request,Blueprint,redirect,url_for
+from flask import render_template,request,Blueprint,redirect,url_for,flash
 from flask_login import login_required
 from models import session,Job,Work,Content
 from sqlalchemy import func
@@ -39,11 +39,16 @@ def index():
             selectedJob=selectedJob, 
             contents=contents, 
             works=works,
-            total_price = total_price
+            total_price = total_price,
+            error = None
         )
     
     elif request.method == "POST":
         update_job_id = request.form['update_job_id']
+        if(update_job_id is None):
+            error = "ジョブIDが選択されていません"
+            flash(error)
+
         update_works = request.form.getlist("update_work[]")
         update_contents = request.form.getlist("update_content[]")
 
@@ -77,11 +82,7 @@ def index():
         new_works = request.form.getlist("new_work[]")
         new_contents = request.form.getlist("new_content[]")
 
-        print(new_works)
-        print(new_contents)
-
         if new_works and new_contents:
-
             for work_type, work_content in zip(new_works, new_contents):
 
                 # 作業内容が空欄ならスキップ

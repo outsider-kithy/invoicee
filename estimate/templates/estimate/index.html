@@ -18,7 +18,7 @@
         </thead>
         {% for job in jobs %}
         <tr class="jobs">
-            <td><input type="radio" name="job" id="job" value="{{ job['id'] }}"></td>
+            <td><input type="radio" name="job" id="job" value="{{ job['id'] }}" required></td>
             <label for="job">
                 <!-- <td>{{ job['id'] }}</td> -->
                 <td>{{ job['title'] }}</td>

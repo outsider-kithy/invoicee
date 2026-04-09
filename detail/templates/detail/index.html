@@ -4,7 +4,11 @@
 {% block content %}
 <h2>ジョブの詳細</h2>
 <h3>{{ selectedJob['project'].project_name }} | {{ selectedJob['title'] }} </h3>
-<p class="error"></p>
+
+{% if error %}
+<p class="error">{{ error }}</p>
+{% endif %}
+
 <form method="POST">
     <table>
         <thead class="items">
@@ -99,6 +103,6 @@
 </form>
 
 
-<script src="../static/js/detail.js"></script>
+<script src="{{ url_for('static',filename='js/detail.js')}}"></script>
 
 {% endblock %}
