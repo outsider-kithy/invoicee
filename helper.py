@@ -18,12 +18,14 @@ def writeExcel(exportJobList,agencyName,accountName,projectName):
     #今日の日付を取得して発行日として入力
     nowDate=datetime.date.today()
 
-    OUTPUT_FILE = OUTPUT_DIR + str(nowDate) + '-estimate.xlsx'
+    OUTPUT_FILE = f'/tmp/{str(nowDate)}-estimate.xlsx'
+    OUTPUT_FILE_NAME = f'{str(nowDate)}-estimate.xlsx'
 
     shutil.copy(TEMPLATE_FILE,OUTPUT_FILE)
 
     workbook = openpyxl.load_workbook(OUTPUT_FILE)
-    worksheet=workbook.get_sheet_by_name(u'シート1')
+    #worksheet=workbook.get_sheet_by_name(u'シート1')
+    worksheet=workbook['シート1']
 
     offset = 0
     #各項目と金額を入力
@@ -45,7 +47,7 @@ def writeExcel(exportJobList,agencyName,accountName,projectName):
         print(exportJobList[i][4])
         tax_rate = int(exportJobList[i][4] * 100)
         worksheet.cell(row = i + offset, column = 4).value = str(tax_rate) + "%"
-        
+
         #offset = 13
         #作業した日付
         worksheet.cell(row=i+offset,column=2).value=exportJobList[i][3]
@@ -56,7 +58,7 @@ def writeExcel(exportJobList,agencyName,accountName,projectName):
         #金額
         worksheet.cell(row=i+offset,column=5).number_format=currentJPY
         worksheet.cell(row=i+offset,column=5).value=exportJobList[i][2]
-    
+
     #日付を入力
     worksheet["E3"].value=str(nowDate)
     #代理店名を入力
@@ -88,11 +90,11 @@ def writeExcel(exportJobList,agencyName,accountName,projectName):
     #0%税率対象の合計金額
     worksheet["B43"].number_format = currentJPY
     worksheet["B43"].value = '=SUMIF(D12:D39,"0%",E12:E39)'
-    
+
     #0%税率の税額をC43セルに入力
     worksheet["C43"].number_format = currentJPY
     worksheet["C43"].value = '=B43*0'
-    
+
     #消費税合計金額をC44セルに入力
     worksheet["C44"].number_format = currentJPY
     worksheet["C44"].value = "=SUM(C41:C43)"
@@ -107,11 +109,11 @@ def writeExcel(exportJobList,agencyName,accountName,projectName):
     #上にも合計金額を入力
     worksheet["B7"].number_format=currentJPY
     worksheet["B7"].value="=SUM(E40:E41)"
-   
+
     #新しいファイルとして保存する
     workbook.save(OUTPUT_FILE)
     workbook.close()
-    
+
     XLSX_MIMETYPE="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 
     response=make_response()
@@ -120,7 +122,8 @@ def writeExcel(exportJobList,agencyName,accountName,projectName):
     response.data=workbook.read()
     workbook.close()
 
-    response.headers["Content-Disposition"]="attachment; filename=" + str(nowDate)+"-estimate.xlsx"
+    response.headers["Content-Disposition"]=f"attachment; filename={OUTPUT_FILE_NAME}"
     response.mimetype=XLSX_MIMETYPE
     os.remove(OUTPUT_FILE)
     return response
+                                                                                                                                       
