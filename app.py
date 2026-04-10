@@ -8,9 +8,7 @@ from dotenv import load_dotenv
 from models import session,User
 
 # データベース
-ENV_MODE = os.getenv("ENV_MODE", "development")
-DOTENV_FILE = f".env.{ENV_MODE}"
-load_dotenv(dotenv_path=DOTENV_FILE)
+load_dotenv('.env')
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 engine=create_engine(DATABASE_URL,isolation_level='AUTOCOMMIT')

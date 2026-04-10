@@ -6,9 +6,8 @@ import shutil
 from dotenv import load_dotenv
 
 # EXCEL出力先
-ENV_MODE = os.getenv("ENV_MODE", "development")
-DOTENV_FILE = f".env.{ENV_MODE}"
-load_dotenv(dotenv_path=DOTENV_FILE)
+load_dotenv('.env')
+DATABASE_URL = os.getenv("DATABASE_URL")
 TEMPLATE_FILE = os.getenv("TEMPLATE_FILE")
 OUTPUT_DIR = os.getenv("OUTPUT_DIR")
 
@@ -51,7 +50,7 @@ def writeExcel(exportJobList,agencyName,accountName,projectName):
         #作業した日付
         worksheet.cell(row=i+offset,column=2).value=exportJobList[i][3]
         #税率
-        print(exportJobList[i][4])
+        #print(exportJobList[i][4])
         tax_rate = int(exportJobList[i][4] * 100)
         worksheet.cell(row = i + offset, column = 4).value = str(tax_rate) + "%"
         #金額

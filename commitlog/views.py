@@ -4,6 +4,7 @@ from zoneinfo import ZoneInfo
 import requests
 from flask import render_template, request, Blueprint
 from models import session,Job
+from dotenv import load_dotenv
 
 jst = ZoneInfo("Asia/Tokyo")
 
@@ -40,6 +41,7 @@ def index():
     }
 
     # 非公開リポジトリの場合は Personal Access Token を付与
+    load_dotenv('.env')
     token = os.getenv("GITHUB_TOKEN")
     headers["Authorization"] = f"Bearer {token}"
 
