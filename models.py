@@ -121,6 +121,7 @@ class Project(Base):
     client_id=Column(Integer,ForeignKey('clients.id'))
     agency_id=Column(Integer,ForeignKey('agencys.id'))
     account_id=Column(Integer,ForeignKey('accounts.id'))
+    isfinished=Column(Integer)
 
     client=relationship("Client")
     agency=relationship("Agency")

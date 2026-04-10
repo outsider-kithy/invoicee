@@ -12,7 +12,7 @@ record = Blueprint(
 @login_required
 def index():
     if request.method=='GET':
-        projects=session.query(Project).all()
+        projects=session.query(Project).filter(Project.isfinished == 0).all()
         tools=session.query(Tool).all()
         return render_template("record/index.html",projects=projects,tools=tools)
 

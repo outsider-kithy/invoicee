@@ -29,6 +29,16 @@
                 <option value="{{tax['rate']}}">{{tax['rate'] * 100}} %</option>
             {% endfor %}
         </select>
+
+        <!--プロジェクトを終了にする-->
+        <label for="finished_project">終了するプロジェクトを選択</label>
+        {% for project in projects %}
+            <div class="radio_box">
+                <input type="radio" name="finished_project" value="{{ project['project_name'] }}">
+                {{ project['project_name'] }}
+            </div>
+        {% endfor %}
+
         <input type="submit" value="登録する">
         
     </form>

@@ -232,6 +232,15 @@ form{
         border-radius: 5px;
     }
   }
+  .radio_box{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    input[type=radio]{
+      width: 15px;
+      margin: 0 10px 0 0;
+    }
+  }
   input[type=submit] {
     align-self: center;
     padding:0.5rem 2.0rem;

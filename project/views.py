@@ -38,25 +38,16 @@ def index():
         if error is not None:
             flash(error)
         else:
-            # projectId=None
             projectClientId=None
-            #projectAgencyId=None
             projectAccountId=None
-            #POSTされてきたprojectClientNameからclient_idを検索
             c=session.query(Client).filter(Client.client_name==projectClientName)
             for j in c:
                 projectClientId=j.id
-            #POSTされてきたprojectAgencyNameからagency_idを検索
-            # ai=session.query(Agency).filter(Agency.agency_name==projectAgencyName)
-            # for k in ai:
-            #     projectAgencyId=k.id
-            #POSTされてきたprojectAccountNameからaccount_idを検索
+        
             aci=session.query(Account).filter(Account.account_name==projectAccountName)
             for l in aci:
                 projectAccountId=l.id
-                #session.close()
-
-                #Projectテーブルに新たなデータをInsert
+            
                 max_id = session.query(func.max(Project.id)).scalar()
                 new_id = max_id + 1 if max_id else 1
 
@@ -65,7 +56,8 @@ def index():
                     project_name=project, 
                     client_id=projectClientId, 
                     agency_id=projectAgencyId, 
-                    account_id=projectAccountId
+                    account_id=projectAccountId,
+                    isfinished=0
                 ))
                 session.commit()
 
