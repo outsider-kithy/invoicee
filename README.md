@@ -13,16 +13,12 @@ source .venv/bin/activate
 
 ## 環境変数の設定
 
-### 開発用
-プロジェクト直下に`.env.development`を作成し、以下を設定
-```.env.development
+プロジェクト直下に`.env`を作成し、以下を設定
+```.env
 DATABASE_URL='PostgreSQLデータベースのURL'
 TEMPLATE_FILE = 'estimate_template.xlsxまでのパス'
 OUTPUT_DIR = '請求書のエクセルデータを書き出すディレクトリ'
 ```
-
-### 本番用
-プロジェクト直下に`.env.production`を作成し、`.env.development`と同様の3つの環境変数を定義
 
 ## パッケージインストール
 ```sh
