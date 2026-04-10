@@ -70,10 +70,4 @@ def create_app():
     from logout import views as logout_views
     app.register_blueprint(logout_views.logout, url_prefix="/logout")
 
-    @app.teardown_request
-    def shutdown_session(exception=None):
-        if exception:
-            session.rollback()
-        session.remove()
-
     return app
