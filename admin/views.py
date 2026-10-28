@@ -1,6 +1,5 @@
 from flask import redirect,render_template,request,url_for,flash,Blueprint
 from flask_login import login_required
-
 from models import session,Client,Agency,Account,Tool,Tax,Project
 
 admin = Blueprint(
@@ -38,7 +37,7 @@ def index():
         if client:
             session.add(Client(client_name=client))
             session.commit()
-
+                
         elif agency:
             session.add(Agency(agency_name=agency))
             session.commit()

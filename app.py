@@ -56,6 +56,12 @@ def create_app():
     from admin import views as admin_views
     app.register_blueprint(admin_views.admin, url_prefix="/admin")
 
+    from error import views as error_views
+    app.register_blueprint(error_views.error, url_prefix="/error")
+
+    from notfound import views as notfound_views
+    app.register_blueprint(notfound_views.notfound, url_prefix="/404")
+
     from project import views as project_views
     app.register_blueprint(project_views.project, url_prefix="/project")
 
@@ -68,4 +74,10 @@ def create_app():
     from logout import views as logout_views
     app.register_blueprint(logout_views.logout, url_prefix="/logout")
 
+	# アプリケーションコンテキスト終了時にSessionを破棄
+    @app.teardown_appcontext
+    def shutdown_session(exception=None):
+        session.remove()
+
     return app
+
