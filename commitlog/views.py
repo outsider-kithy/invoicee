@@ -41,7 +41,7 @@ def index():
     }
 
     # 非公開リポジトリの場合は Personal Access Token を付与
-    load_dotenv('.env')
+    load_dotenv('.env', override=True)
     token = os.getenv("GITHUB_TOKEN")
     headers["Authorization"] = f"Bearer {token}"
 

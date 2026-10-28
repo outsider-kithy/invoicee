@@ -48,11 +48,7 @@ def index():
             for l in aci:
                 projectAccountId=l.id
             
-                max_id = session.query(func.max(Project.id)).scalar()
-                new_id = max_id + 1 if max_id else 1
-
                 session.add(Project(
-                    id=new_id,
                     project_name=project, 
                     client_id=projectClientId, 
                     agency_id=projectAgencyId, 

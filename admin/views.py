@@ -36,19 +36,11 @@ def index():
         finished_project=request.form.get('finished_project')
 
         if client:
-            #現在のclientの件数を求めて+1した値を新しいデータのidとする
-            clientId=session.query(Client).count()
-            session.add(Client(id=clientId+1,
-                               client_name=client
-                               ))
+            session.add(Client(client_name=client))
             session.commit()
 
         elif agency:
-            #現在のagencyの件数を求めて+1した値を新しいデータのidとする
-            agencyId=session.query(Agency).count()
-            session.add(Agency(id=agencyId+1,
-                               agency_name=agency
-                               ))
+            session.add(Agency(agency_name=agency))
             session.commit()
 
         elif account:
@@ -56,24 +48,14 @@ def index():
             a=session.query(Agency).filter(Agency.agency_name==agencyName)
             for i in a:
                 accountAgencyId=i.id
-            #現在のaccountの件数を求めて+1した値を新しいデータのidとする
-            accountId=session.query(Account).count()
-            session.add(Account(id=accountId+1,
-                                account_name=account,
-                                agency_id=accountAgencyId
-                                ))
+            session.add(Account(account_name=account, agency_id=accountAgencyId))
             session.commit()
 
         elif tool:
-            toolId=session.query(Tool).count()
             t = session.query(Tax).filter(Tax.rate==tax)
             for u in t:
                 taxId = u.id
-            session.add(Tool(id=toolId+1,
-                             tool_type=tool,
-                             price=price,
-                             tax_rate_id = taxId
-                             ))
+            session.add(Tool(tool_type=tool, price=price, tax_rate_id = taxId))
             session.commit()
             
         # 選択したプロジェクトを終了にする
