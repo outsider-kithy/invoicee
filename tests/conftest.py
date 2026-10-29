@@ -1,10 +1,17 @@
 import os
 import pytest
+from pathlib import Path
 from flask_login import UserMixin
 from app import create_app
+from dotenv import load_dotenv
 from playwright.sync_api import Page, expect
 
 BASE_URL = "http://127.0.0.1:5000"
+
+# プロジェクトのルートディレクトリ
+BASE_DIR = Path(__file__).resolve().parent.parent
+# .env.testを読み込む
+load_dotenv(BASE_DIR / ".env.test")
 
 class MockUser(UserMixin):
     id = "1"
@@ -59,6 +66,6 @@ def logged_in_page(page: Page):
 
     page.get_by_role("button", name="ログイン").click()
 
-    expect(page).to_have_url(f"{BASE_URL}/admin/")
+    expect(page).to_have_url(f"{BASE_URL}/top/")
 
     return page
