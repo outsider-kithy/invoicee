@@ -11,5 +11,6 @@
 .venv
 .env.development
 .env.production
+.env.test
 .env
 *__pycache__

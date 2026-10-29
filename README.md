@@ -37,3 +37,46 @@ flask run
 ```sh
 deactivate
 ```
+
+## テスト
+```sh
+tests
+├── conftest.py #単体テスト
+├── init_test_db.py #テスト用データベースの作成
+├── seed_test_db.py #テスト用ユーザーの作成
+├── test_db_integration.py #結合テスト
+├── test_e2e.py #e2eテスト
+├── test_error.py #エラーページへの遷移テスト
+└── test_error_integration.py #エラー時のロールバックテスト
+```
+
+### テスト用データベース・テスト用ユーザーの作成
+```sh
+python -m tests.init_test_db
+python -m tests.seed_test_db
+```
+
+### Flaskの起動
+```sh
+flask --app 'app:create_app()' run --port 5000 --no-reload
+```
+
+### 結合テスト
+```sh
+python -m pytest tests/test_db_integration.py -v
+```
+
+### エラー時のロールバックテスト
+```sh
+python -m pytest tests/test_error_integration.py -v
+```
+
+### e2eテスト
+```sh
+python -m pytest tests/test_e2e.py -v
+```
+
+### エラーページへの遷移テスト 
+```sh
+python -m pytest tests/test_error.py -v
+```
