@@ -8,7 +8,6 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent
 load_dotenv(BASE_DIR / '.env')
-
 DATABASE_URL = os.getenv("DATABASE_URL")
 TEMPLATE_FILE = os.getenv("TEMPLATE_FILE")
 OUTPUT_DIR = os.getenv("OUTPUT_DIR")
