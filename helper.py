@@ -4,9 +4,11 @@ import datetime
 from flask import make_response
 import shutil
 from dotenv import load_dotenv
+from pathlib import Path
 
-# EXCEL出力先
-load_dotenv('.env')
+BASE_DIR = Path(__file__).resolve().parent
+load_dotenv(BASE_DIR / '.env')
+
 DATABASE_URL = os.getenv("DATABASE_URL")
 TEMPLATE_FILE = os.getenv("TEMPLATE_FILE")
 OUTPUT_DIR = os.getenv("OUTPUT_DIR")

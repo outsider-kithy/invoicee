@@ -6,9 +6,11 @@ import datetime
 from sqlalchemy.sql.sqltypes import Date
 from flask_login import UserMixin
 from dotenv import load_dotenv
+from pathlib import Path
 
-# データベース
-load_dotenv('.env')
+BASE_DIR = Path(__file__).resolve().parent
+load_dotenv(BASE_DIR / '.env')
+
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 engine=create_engine(DATABASE_URL,isolation_level='AUTOCOMMIT')
@@ -17,7 +19,6 @@ db_uri = os.environ.get(DATABASE_URL)
 
 Base.metadata.create_all(engine)
 Session=sessionmaker(bind=engine)
-# session=Session()
 # スレッドごとにSessionを管理
 session = scoped_session(Session)
 

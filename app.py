@@ -6,9 +6,11 @@ from sqlalchemy.ext.declarative import declarative_base
 from flask_login import LoginManager,login_manager
 from dotenv import load_dotenv
 from models import session,User
+from pathlib import Path
 
-# データベース
-load_dotenv('.env')
+BASE_DIR = Path(__file__).resolve().parent
+load_dotenv(BASE_DIR / '.env')
+
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 engine=create_engine(DATABASE_URL,isolation_level='AUTOCOMMIT')
