@@ -1,4 +1,3 @@
-"""Real application, isolated PostgreSQL schemas, and local HTTP fixtures."""
 import os
 from pathlib import Path
 import sys
@@ -11,13 +10,13 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-# Read this file explicitly, so a shell or .env production URL cannot win.
+# テスト用のデータベースに接続
 TEST_DATABASE_URL = dotenv_values(ROOT / '.env.test').get('DATABASE_URL')
 if not TEST_DATABASE_URL:
-    raise pytest.UsageError('.env.test must define DATABASE_URL')
+    raise pytest.UsageError('.env.testにDATABASE_URLが定義されていません。')
 from sqlalchemy.engine import make_url
 if make_url(TEST_DATABASE_URL).get_backend_name() != 'postgresql':
-    raise pytest.UsageError('.env.test DATABASE_URL must use PostgreSQL')
+    raise pytest.UsageError('テスト用DBはPostgreSQLである必要があります。')
 os.environ['DATABASE_URL'] = TEST_DATABASE_URL
 os.environ['TEMPLATE_FILE'] = str(ROOT / 'estimate_template.xlsx')
 
@@ -31,8 +30,7 @@ from werkzeug.serving import make_server
 
 @pytest.fixture
 def app(monkeypatch):
-    # Separate schemas preserve existing tables, allow real commits/rollbacks,
-    # and are visible to the E2E server's independent database connections.
+    # 既存のDBではなく、テスト用のDBを用いてテストする
     schema = f'pytest_{uuid4().hex}'
     engine = create_engine(TEST_DATABASE_URL,
                            connect_args={'options': f'-csearch_path={schema}'})
@@ -61,7 +59,7 @@ def app(monkeypatch):
 def client(app):
     return app.test_client()
 
-
+# テスト用のレコードを追加
 @pytest.fixture
 def seed(app):
     tax = models.Tax(id=1, rate='0.10')
@@ -85,7 +83,7 @@ def seed(app):
         agency_id=1, account_id=1, project_id=1, price=10000, estimated=0,
         invoiced=0, github_repository='example/repo'))
     models.session.flush()
-    # Explicit fixture IDs do not advance PostgreSQL SERIAL sequences.
+    
     for table in models.Base.metadata.sorted_tables:
         models.session.execute(text(
             f"SELECT setval(pg_get_serial_sequence('{table.name}', 'id'), "
@@ -117,8 +115,7 @@ def live_url(app, seed):
 
 @pytest.fixture(autouse=True)
 def block_external_http(monkeypatch):
-    """External services must be mocked; browser localhost traffic is unaffected."""
     import requests
     def unexpected_request(*args, **kwargs):
-        raise AssertionError('External HTTP is disabled in tests; mock the service client')
+        raise AssertionError('テストでは外部HTTPが無効になっているため、サービスクライアントをモックします。')
     monkeypatch.setattr(requests.sessions.Session, 'request', unexpected_request)
