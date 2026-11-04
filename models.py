@@ -17,7 +17,7 @@ engine=create_engine(DATABASE_URL,isolation_level='AUTOCOMMIT')
 Base=declarative_base()
 db_uri = os.environ.get(DATABASE_URL)
 
-Base.metadata.create_all(engine)
+#Base.metadata.create_all(engine)
 Session=sessionmaker(bind=engine)
 # スレッドごとにSessionを管理
 session = scoped_session(Session)

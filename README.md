@@ -39,44 +39,15 @@ deactivate
 ```
 
 ## テスト
+
+pytestを使った単体・結合・ブラウザE2Eテストを `tests/` に用意しています。
+`.env.test` のPostgreSQLデータベースを使用します（DBは事前に作成してください）。
+テスト用スキーマとHTTPサーバーは自動で作成・破棄されます。
+
 ```sh
-tests
-├── conftest.py #単体テスト
-├── init_test_db.py #テスト用データベースの作成
-├── seed_test_db.py #テスト用ユーザーの作成
-├── test_db_integration.py #結合テスト
-├── test_e2e.py #e2eテスト
-├── test_error.py #エラーページへの遷移テスト
-└── test_error_integration.py #エラー時のロールバックテスト
+python -m playwright install chromium
+python -m pytest -v
 ```
 
-### テスト用データベース・テスト用ユーザーの作成
-```sh
-python -m tests.init_test_db
-python -m tests.seed_test_db
-```
-
-### Flaskの起動
-```sh
-flask --app 'app:create_app()' run --port 5000 --no-reload
-```
-
-### 結合テスト
-```sh
-python -m pytest tests/test_db_integration.py -v
-```
-
-### エラー時のロールバックテスト
-```sh
-python -m pytest tests/test_error_integration.py -v
-```
-
-### e2eテスト
-```sh
-python -m pytest tests/test_e2e.py -v
-```
-
-### エラーページへの遷移テスト 
-```sh
-python -m pytest tests/test_error.py -v
-```
+ブラウザ不要のテストは `python -m pytest -m 'not e2e' -v` で実行できます。
+詳しい構成・実行方法は [tests/README.md](tests/README.md) を参照してください。
