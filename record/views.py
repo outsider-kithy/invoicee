@@ -11,66 +11,65 @@ record = Blueprint(
 @record.route("/",methods=("GET","POST"))
 @login_required
 def index():
-    if request.method=='GET':
-        projects=session.query(Project).filter(Project.isfinished == 0).all()
-        tools=session.query(Tool).all()
-        return render_template("record/index.html",projects=projects,tools=tools)
+    if request.method == 'GET':
+        projects = session.query(Project).filter(Project.isfinished == 0).all()
+        tools = session.query(Tool).all()
+        return render_template("record/index.html",projects = projects,tools = tools)
 
-    elif request.method=='POST':
-        title=request.form['title']
-        project=request.form['project']
-        tool=request.form['tool']
-        github_repository=request.form['github_repository']
-        error=None
+    elif request.method == 'POST':
+        title = request.form['title']
+        project = request.form['project']
+        tool = request.form['tool']
+        github_repository = request.form['github_repository']
+        error = None
         
         if not title:
-            error="タイトルが入力されていません"
+            error = "タイトルが入力されていません"
         if not project:
-            error="プロジェクト名が選択されていません"
+            error = "プロジェクト名が選択されていません"
         if not tool:
             error="ツール名が選択されていません"
         if error is not None:
             flash(error)
+            return redirect(url_for("record.index"))
         else:
-            clientId=None
-            agencyId=None
-            accountId=None
-            projectId=None
-            price=0
 
             #ツール名からtool_idを取得
-            t=session.query(Tool).filter(Tool.tool_type==tool)
-            for i in t:
-                toolId=i.id
+            tool_record = (
+                session.query(Tool)
+                .filter(Tool.tool_type == tool)
+                .first()
+            )
+            if tool_record is None:
+                flash("指定されたツールが存在しません")
+                return redirect(url_for("record.index"))
 
-                #ツールidから価格を判定
-                p=0
-                p=session.query(Tool).filter(Tool.id==toolId)
-                for j in p:
-                    price=j.price
+			# プロジェクト名からproject_idを取得
+            project_record = (
+                session.query(Project)
+                .filter(Project.project_name == project)
+                .first()
+            )
 
-            #プロジェクト名からproject_idを取得
-            pj=session.query(Project).filter(Project.project_name==project)
-            for n in pj:
-                projectId=n.id
-                clientId = n.client_id
-                agencyId = n.agency_id
-                accountId = n.account_id
+            if project_record is None:
+                flash("指定されたプロジェクトが存在しません")
+                return redirect(url_for("record.index"))
 
-                #ジョブテーブルに新たなジョブを登録
-                session.add(Job(
-                    title=title,
-                    tool_type_id=toolId,
-                    client_id=clientId,
-                    agency_id=agencyId,
-                    account_id=accountId,
-                    project_id=projectId,
-                    price=price,
-                    estimated=0,
-                    invoiced=0,
-                    github_repository=github_repository
-                ))
-                session.commit()
+			#ジョブテーブルに新たなジョブを登録
+            session.add(Job(
+				title = title,
+				tool_type_id = tool_record.id,
+				client_id = project_record.client_id,
+				agency_id = project_record.agency_id,
+				account_id = project_record.account_id,
+				project_id = project_record.id,
+				price = tool_record.price,
+				estimated = 0,
+				invoiced = 0,
+				github_repository = github_repository
+			))
+            
+            session.commit()
 
-            return redirect(url_for('top.index'))
+        return redirect(url_for('top.index'))
     

@@ -12,7 +12,6 @@ top = Blueprint(
 @top.route("/")
 @login_required
 def index():
-    #クライアント名と代理店名をjobに紐付ける
     jobs = (
     session.query(Job)
     .join(Client)
@@ -39,7 +38,5 @@ def index():
             "job": job,
             "current_price": total_price,
         })
-
-        # print(job_list)
 
     return render_template("top/index.html",job_list=job_list, monthly_total_price=monthly_total_price)

@@ -18,6 +18,10 @@ import models
 from login.views import login
 from register.views import register
 from logout.views import logout
+from top.views import top
+from update.views import update
+from detail.views import detail
+from record.views import record
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -52,11 +56,10 @@ def app():
     app.register_blueprint(login, url_prefix="/login")
     app.register_blueprint(register, url_prefix="/register")
     app.register_blueprint(logout, url_prefix="/logout")
-
-    # ログイン成功時のリダイレクト先
-    @app.route("/top", endpoint="top.index")
-    def top_index():
-        return "TOP"
+    app.register_blueprint(top, url_prefix="/top")
+    app.register_blueprint(update, url_prefix="/update")
+    app.register_blueprint(detail, url_prefix="/detail")
+    app.register_blueprint(record, url_prefix="/record")
 
     return app
 

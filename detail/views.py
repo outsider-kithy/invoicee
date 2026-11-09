@@ -44,10 +44,11 @@ def index():
         )
     
     elif request.method == "POST":
-        update_job_id = request.form['update_job_id']
+        update_job_id = request.form.get("update_job_id")
         if(update_job_id is None):
             error = "ジョブIDが選択されていません"
             flash(error)
+            return redirect(url_for("update.index"))
 
         update_works = request.form.getlist("update_work[]")
         update_contents = request.form.getlist("update_content[]")
@@ -76,8 +77,6 @@ def index():
             content_record.work_id = work_record.id
             content_record.work_content = work_content
 
-            #session.commit()
-
         # 新しい作業内容を登録
         new_works = request.form.getlist("new_work[]")
         new_contents = request.form.getlist("new_content[]")
@@ -100,6 +99,9 @@ def index():
                 if not work_record:
                     continue
 
+                #content_record.work_id = work_record.id
+                #content_record.work_content = work_content
+
                 # Contentテーブルに新しいレコードを追加
                 new_content = Content(
                     job_id=update_job_id,
@@ -109,6 +111,6 @@ def index():
 
                 session.add(new_content)
 
-            session.commit()
+        session.commit()
 
         return redirect(url_for('update.index'))

@@ -19,14 +19,14 @@ def index():
         return render_template("update/index.html",jobs=jobs,works=works)
 
     elif request.method=='POST':
-        error=None
-        selectedJobId=request.form['jobId']
+        selectedJobId = request.form.get("jobId", "")
 
-        if not selectedJobId:
-            error="ジョブが選択されていません"
-            flash(error)
-        
-        session.close()
+    if not selectedJobId:
+        flash("ジョブが選択されていません")
+        return redirect(url_for("update.index"))
 
-    # /detailルートに遷移
-    return redirect(url_for('detail.index', selectedJobId=selectedJobId))
+    session.close()
+
+    return redirect(
+        url_for("detail.index", selectedJobId=selectedJobId)
+    )
