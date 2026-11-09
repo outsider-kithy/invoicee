@@ -3,10 +3,21 @@ from pathlib import Path
 import sys
 from threading import Thread
 from uuid import uuid4
-
 from dotenv import dotenv_values
-
 import pytest
+from flask import Flask
+from flask_login import LoginManager
+from sqlalchemy import create_engine, text
+from sqlalchemy.schema import CreateSchema, DropSchema
+from werkzeug.security import generate_password_hash
+from werkzeug.serving import make_server
+
+from app import create_app
+import models
+
+from login.views import login
+from register.views import register
+from logout.views import logout
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -20,12 +31,34 @@ if make_url(TEST_DATABASE_URL).get_backend_name() != 'postgresql':
 os.environ['DATABASE_URL'] = TEST_DATABASE_URL
 os.environ['TEMPLATE_FILE'] = str(ROOT / 'estimate_template.xlsx')
 
-from app import create_app
-import models
-from sqlalchemy import create_engine, text
-from sqlalchemy.schema import CreateSchema, DropSchema
-from werkzeug.security import generate_password_hash
-from werkzeug.serving import make_server
+@pytest.fixture
+def app():
+    app = Flask(__name__)
+    app.config.update(
+        TESTING=True,
+        SECRET_KEY="test-secret-key",
+    )
+
+    login_manager = LoginManager()
+    
+    login_manager.login_view = "login.index"
+
+    login_manager.init_app(app)
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        return None
+
+    app.register_blueprint(login, url_prefix="/login")
+    app.register_blueprint(register, url_prefix="/register")
+    app.register_blueprint(logout, url_prefix="/logout")
+
+    # ログイン成功時のリダイレクト先
+    @app.route("/top", endpoint="top.index")
+    def top_index():
+        return "TOP"
+
+    return app
 
 
 @pytest.fixture
@@ -119,3 +152,6 @@ def block_external_http(monkeypatch):
     def unexpected_request(*args, **kwargs):
         raise AssertionError('テストでは外部HTTPが無効になっているため、サービスクライアントをモックします。')
     monkeypatch.setattr(requests.sessions.Session, 'request', unexpected_request)
+
+
+

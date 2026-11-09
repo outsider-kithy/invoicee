@@ -34,5 +34,5 @@ def index():
                     login_user(user)
                     return redirect(url_for('top.index'))
 
-        #session.close()
+        session.close()
         return render_template('login/index.html',error=error)

@@ -1,7 +1,6 @@
 import os
 from sqlalchemy import Column,Integer,Numeric,String,ForeignKey,create_engine
-from sqlalchemy.orm import relationship,sessionmaker,scoped_session
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship,sessionmaker,scoped_session, declarative_base
 import datetime
 from sqlalchemy.sql.sqltypes import Date
 from flask_login import UserMixin
@@ -14,7 +13,7 @@ load_dotenv(BASE_DIR / '.env')
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 engine=create_engine(DATABASE_URL,isolation_level='AUTOCOMMIT')
-Base=declarative_base()
+Base = declarative_base()
 db_uri = os.environ.get(DATABASE_URL)
 
 #Base.metadata.create_all(engine)
