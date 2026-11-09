@@ -12,13 +12,13 @@ update = Blueprint(
 @update.route("/",methods=('GET','POST'))
 @login_required
 def index():
-    if request.method=='GET':
+    if request.method == 'GET':
         #未見積もりのwebサイト・LP・htmlメールのみ選択
         jobs=session.query(Job).join(Client).join(Agency).join(Project).filter(Job.estimated==0,Job.tool_type_id.between(1,4)).all()
         works=session.query(Work).all()
         return render_template("update/index.html",jobs=jobs,works=works)
 
-    elif request.method=='POST':
+    elif request.method == 'POST':
         selectedJobId = request.form.get("jobId", "")
 
     if not selectedJobId:

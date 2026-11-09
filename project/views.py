@@ -1,7 +1,5 @@
-from flask import Flask,redirect,render_template,request,url_for,flash,Blueprint
+from flask import redirect,render_template,request,url_for,flash,Blueprint
 from flask_login import login_required
-from sqlalchemy import func
-
 from models import session,Client,Agency,Account,Project
 
 project = Blueprint(
@@ -10,51 +8,52 @@ project = Blueprint(
     template_folder="templates",
 )
 
-@project.route("/",methods=("GET","POST"))
+@project.route("/",methods = ("GET","POST"))
 @login_required
 def index():
-    if request.method=='GET':
-        clients=session.query(Client).all()
-        agencys=session.query(Agency).all()
-        accounts=session.query(Account).all()
-        return render_template("project/index.html",clients=clients,agencys=agencys,accounts=accounts)
+    if request.method == 'GET':
+        clients = session.query(Client).all()
+        agencys = session.query(Agency).all()
+        accounts = session.query(Account).all()
+        return render_template("project/index.html",clients = clients,agencys=agencys,accounts=accounts)
 
-    elif request.method=='POST':
-        project=request.form['project']
-        projectClientName=request.form['projectClientName']
-        projectAgencyId=request.form['projectAgencyId']
+    elif request.method == 'POST':
+        project = request.form['project']
+        projectClientName = request.form['projectClientName']
+        projectAgencyId = request.form['projectAgencyId']
         projectAgencyName = session.query(Agency).filter(Agency.id == projectAgencyId).first()
-        projectAccountName=request.form['projectAccountName']
-        error=None
+        projectAccountName = request.form['projectAccountName']
+        error = None
         
         if not project:
-            error="プロジェクト名が入力されていません"
+            error = "プロジェクト名が入力されていません"
         if not projectClientName:
-            error="クライアント名が選択されていません"
+            error = "クライアント名が選択されていません"
         if not projectAgencyName:
-            error="代理店名が入力されていません"
+            error = "代理店名が入力されていません"
         if not projectAccountName:
-            error="担当者名が入力されていません"
+            error = "担当者名が入力されていません"
         if error is not None:
             flash(error)
+            return redirect(url_for("project.index"))
         else:
-            projectClientId=None
-            projectAccountId=None
-            c=session.query(Client).filter(Client.client_name==projectClientName)
-            for j in c:
-                projectClientId=j.id
-        
-            aci=session.query(Account).filter(Account.account_name==projectAccountName)
-            for l in aci:
-                projectAccountId=l.id
+            projectClient = session.query(Client).filter(Client.client_name==projectClientName).first()
+            if projectClient is None:
+                flash("指定されたクライアントが存在しません")
+                return redirect(url_for("project.index"))
             
-                session.add(Project(
-                    project_name=project, 
-                    client_id=projectClientId, 
-                    agency_id=projectAgencyId, 
-                    account_id=projectAccountId,
-                    isfinished=0
-                ))
-                session.commit()
+            projectAccount = session.query(Account).filter(Account.account_name==projectAccountName).first()
+            if projectAccount is None:
+                flash("指定された担当者が存在しません")
+                return redirect(url_for("project.index"))
+            
+            session.add(Project(
+				project_name = project, 
+				client_id = projectClient.id, 
+				agency_id = projectAgencyId, 
+				account_id = projectAccount.id,
+				isfinished = 0
+			))
+            session.commit()
 
-            return redirect(url_for('top.index'))
+        return redirect(url_for('top.index'))
