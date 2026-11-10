@@ -5,6 +5,7 @@ from flask import make_response
 import shutil
 from dotenv import load_dotenv
 from pathlib import Path
+from decimal import Decimal
 
 BASE_DIR = Path(__file__).resolve().parent
 load_dotenv(BASE_DIR / '.env')
@@ -45,8 +46,8 @@ def writeExcel(exportJobList,agencyName,accountName,projectName):
         #作業した日付
         worksheet.cell(row=i+offset,column=2).value=exportJobList[i][3]
         #税率
-        print(exportJobList[i][4])
-        tax_rate = int(exportJobList[i][4] * 100)
+        #print(exportJobList[i][4])
+        tax_rate = int(Decimal(exportJobList[i][4]) * Decimal(100.0))
         worksheet.cell(row = i + offset, column = 4).value = str(tax_rate) + "%"
 
         #offset = 13
@@ -54,7 +55,7 @@ def writeExcel(exportJobList,agencyName,accountName,projectName):
         worksheet.cell(row=i+offset,column=2).value=exportJobList[i][3]
         #税率
         #print(exportJobList[i][4])
-        tax_rate = int(exportJobList[i][4] * 100)
+        tax_rate = int(Decimal(exportJobList[i][4]) * Decimal(100.0))
         worksheet.cell(row = i + offset, column = 4).value = str(tax_rate) + "%"
         #金額
         worksheet.cell(row=i+offset,column=5).number_format=currentJPY

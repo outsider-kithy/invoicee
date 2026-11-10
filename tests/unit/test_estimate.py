@@ -4,7 +4,7 @@ from urllib.parse import urlparse
 
 import pytest
 
-from models import Job, Client, Agency, Project, Tool, Account, Work, Content, Tax
+from models import Job, Tool, Work, Content, Tax
 
 
 @pytest.fixture
@@ -52,48 +52,87 @@ def make_query(records):
     return query
 
 
-def setup_post_queries(mock_session, job, contents=None, tool=None):
-    agency = MagicMock(spec=Agency)
-    agency.agency_name = "テスト代理店"
 
-    account = MagicMock(spec=Account)
-    account.account_name = "テスト担当者"
+def setup_post_queries(
+    mock_session,
+    job,
+    contents=None,
+    tool=None,
+    agency_name="テスト代理店",
+    account_name="テスト担当者",
+    project_name="テストプロジェクト"
+):
+    # 1回目：Job検索
+    job_query = MagicMock()
+    job_query.join.return_value = job_query
+    job_query.filter.return_value.all.return_value = [job]
 
-    project = MagicMock(spec=Project)
-    project.project_name = "テストプロジェクト"
-
-    # 最初のJob検索
-    queries = [make_query([job])]
-
+    # 2回目：ContentまたはTool検索
     if job.tool_type_id in (1, 2, 3, 4):
-        # Web系：Content検索
-        queries.append(make_query(contents or []))
+        # Web系Job：Contentを取得
+        detail_query = MagicMock()
+        detail_query.join.return_value = detail_query
+        detail_query.filter.return_value.all.return_value = (
+            contents if contents is not None else []
+        )
     else:
-        # 紙媒体：Tool検索
-        tool_query = MagicMock()
-        tool_query.filter.return_value.first.return_value = tool
-        queries.append(tool_query)
+        # 紙媒体Job：Toolを取得
+        detail_query = MagicMock()
+        detail_query.filter.return_value.first.return_value = tool
 
-    # Agency検索：Job → Agency
-    queries.extend([
-        make_query([job]),
-        make_query([agency]),
-    ])
+    # 3回目：Agency名
+    agency_query = MagicMock()
+    agency_query.join.return_value = agency_query
+    agency_query.filter.return_value.scalar.return_value = agency_name
 
-    # Account検索：Job → Account
-    queries.extend([
-        make_query([job]),
-        make_query([account]),
-    ])
+    # 4回目：Account名
+    account_query = MagicMock()
+    account_query.join.return_value = account_query
+    account_query.filter.return_value.scalar.return_value = account_name
 
-    # Project検索：Job → Project
-    queries.extend([
-        make_query([job]),
-        make_query([project]),
-    ])
+    # 5回目：Project名
+    project_query = MagicMock()
+    project_query.join.return_value = project_query
+    project_query.filter.return_value.scalar.return_value = project_name
 
-    mock_session.query.side_effect = queries
+    mock_session.query.side_effect = [
+        job_query,
+        detail_query,
+        agency_query,
+        account_query,
+        project_query
+    ]
 
+def test_estimate_post_recipient_none(
+    client, authenticated, job_data
+):
+    with patch("estimate.views.session") as mock_session, \
+         patch("estimate.views.writeExcel") as mock_excel:
+
+        setup_post_queries(
+            mock_session,
+            job_data,
+            [make_content()],
+            agency_name=None,
+            account_name=None,
+            project_name=None
+        )
+
+        mock_excel.return_value = "EXCEL RESULT"
+
+        response = client.post(
+            "/estimate/",
+            data={"job": ["1"]}
+        )
+
+        assert response.status_code == 200
+
+        args = mock_excel.call_args.args
+
+        assert args[1] is None
+        assert args[2] is None
+        assert args[3] is None
+        
 
 def test_estimate_get(client, authenticated):
     job = MagicMock(spec=Job)
@@ -112,10 +151,12 @@ def test_estimate_get(client, authenticated):
         assert response.status_code == 200
         mock_session.query.assert_called_once_with(Job)
         assert query.join.call_count == 3
+        assert mock_render.call_args.kwargs["error"] == ""
 
         mock_render.assert_called_once_with(
             "estimate/index.html",
-            jobs=[job]
+            jobs = [job],
+            error = ""
         )
 
 
@@ -133,10 +174,16 @@ def test_estimate_get_empty(client, authenticated):
 
         assert response.status_code == 200
         assert mock_render.call_args.kwargs["jobs"] == []
+        assert mock_render.call_args.kwargs["error"] == "ジョブは0件です。"
 
 
 def test_estimate_post_web_job(client, authenticated, job_data):
-    content = make_content()
+    content = make_content(
+        text="文言修正",
+        price=30000,
+        created="2026-11-09",
+        tax_rate=0.1
+    )
 
     with patch("estimate.views.session") as mock_session, \
          patch("estimate.views.writeExcel") as mock_excel:
@@ -155,17 +202,16 @@ def test_estimate_post_web_job(client, authenticated, job_data):
             [
                 [
                     "Webサイト制作",
-                    "コーディング",
+                    "文言修正",
                     30000,
                     "2026-11-09",
-                    10
+                    0.1
                 ]
             ],
             "テスト代理店",
             "テスト担当者",
             "テストプロジェクト"
         )
-
 
 def test_estimate_post_print_job(client, authenticated, job_data):
     job_data.title = "パンフレット制作"
@@ -232,9 +278,7 @@ def test_estimate_post_multiple_contents(
         assert rows[1][2] == 30000
 
 
-def test_estimate_post_no_contents(
-    client, authenticated, job_data
-):
+def test_estimate_post_no_contents(client, authenticated, job_data):
     with patch("estimate.views.session") as mock_session, \
          patch("estimate.views.writeExcel") as mock_excel:
 
@@ -247,8 +291,19 @@ def test_estimate_post_no_contents(
 
         assert response.status_code == 200
 
-        # 現行実装ではContentがないと空リストになる
-        assert mock_excel.call_args.args[0] == []
+        expected_rows = [
+            [
+                "Webサイト制作",
+                None,
+                100000,
+                "2026-11-09",
+                0.0
+            ]
+        ]
+
+        assert mock_excel.call_args.args[0] == expected_rows
+
+        mock_session.commit.assert_called_once()
 
 
 def test_estimate_post_mark_estimated(
@@ -340,7 +395,7 @@ def test_estimate_post_multiple_jobs_current_behavior(
         # 現行実装では最初のJobでreturnされる
         mock_excel.assert_called_once()
         mock_session.commit.assert_called_once()
-        assert mock_session.query.call_count == 8
+        assert mock_session.query.call_count == 5
 
 
 def test_estimate_login_required_get(client):
