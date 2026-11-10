@@ -1,78 +1,44 @@
 import os
-from pathlib import Path
 import sys
+from pathlib import Path
 from threading import Thread
 from uuid import uuid4
 from dotenv import dotenv_values
 import pytest
-from flask import Flask
-from flask_login import LoginManager
 from sqlalchemy import create_engine, text
 from sqlalchemy.schema import CreateSchema, DropSchema
 from werkzeug.security import generate_password_hash
 from werkzeug.serving import make_server
 
-from app import create_app
-import models
-
-from login.views import login
-from register.views import register
-from logout.views import logout
-from top.views import top
-from update.views import update
-from detail.views import detail
-from record.views import record
-from project.views import project
-from admin.views import admin
-from estimate.views import estimate
-from error.views import error
-from notfound.views import notfound
+import pytest
+from dotenv import dotenv_values
+from sqlalchemy.engine import make_url
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-# テスト用のデータベースに接続
-TEST_DATABASE_URL = dotenv_values(ROOT / '.env.test').get('DATABASE_URL')
-if not TEST_DATABASE_URL:
-    raise pytest.UsageError('.env.testにDATABASE_URLが定義されていません。')
-from sqlalchemy.engine import make_url
-if make_url(TEST_DATABASE_URL).get_backend_name() != 'postgresql':
-    raise pytest.UsageError('テスト用DBはPostgreSQLである必要があります。')
-os.environ['DATABASE_URL'] = TEST_DATABASE_URL
-os.environ['TEMPLATE_FILE'] = str(ROOT / 'estimate_template.xlsx')
 
-@pytest.fixture
-def app():
-    app = Flask(__name__)
-    app.config.update(
-        TESTING=True,
-        SECRET_KEY="test-secret-key",
+# テスト用環境変数を先に設定
+test_env = dotenv_values(ROOT / ".env.test")
+
+TEST_DATABASE_URL = test_env.get("DATABASE_URL")
+
+if not TEST_DATABASE_URL:
+    raise pytest.UsageError(
+        ".env.testにDATABASE_URLが定義されていません。"
     )
 
-    login_manager = LoginManager()
-    
-    login_manager.login_view = "login.index"
+if make_url(TEST_DATABASE_URL).get_backend_name() != "postgresql":
+    raise pytest.UsageError(
+        "テスト用DBはPostgreSQLである必要があります。"
+    )
 
-    login_manager.init_app(app)
+os.environ["DATABASE_URL"] = TEST_DATABASE_URL
+os.environ["TEMPLATE_FILE"] = str(
+    ROOT / "estimate_template.xlsx"
+)
 
-    @login_manager.user_loader
-    def load_user(user_id):
-        return None
-
-    app.register_blueprint(login, url_prefix="/login")
-    app.register_blueprint(register, url_prefix="/register")
-    app.register_blueprint(logout, url_prefix="/logout")
-    app.register_blueprint(top, url_prefix="/top")
-    app.register_blueprint(update, url_prefix="/update")
-    app.register_blueprint(detail, url_prefix="/detail")
-    app.register_blueprint(record, url_prefix="/record")
-    app.register_blueprint(project, url_prefix="/project")
-    app.register_blueprint(admin, url_prefix="/admin")
-    app.register_blueprint(estimate, url_prefix="/estimate")
-    app.register_blueprint(error, url_prefix="/error")
-    app.register_blueprint(notfound, url_prefix="/404")
-
-    return app
-
+from app import create_app
+import models
 
 @pytest.fixture
 def app(monkeypatch):

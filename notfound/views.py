@@ -1,5 +1,4 @@
 from flask import render_template, Blueprint, request
-from flask_login import login_required
 
 notfound = Blueprint(
     "notfound",
@@ -7,18 +6,31 @@ notfound = Blueprint(
     template_folder="templates",
 )
 
-@notfound.route("/",methods=("GET","POST"))
-@login_required
+# 404ページへの直接アクセス
+@notfound.route("/", methods=("GET", "POST"))
 def index():
-    if request.method=='GET':
-        return render_template(
-            "notfound/index.html",
-            error_message="指定のページは見つかりませんでした。"
-        ), 404
-    
-    elif request.method=='POST':
-        return render_template(
-            "notfound/index.html",
-			error_message="指定のページは見つかりませんでした。"
-        ), 404
+    return render_template(
+        "notfound/index.html",
+        error_message="指定のページは見つかりませんでした。"
+    ), 404
 
+
+# 存在しないURLへのアクセスを処理
+@notfound.app_errorhandler(404)
+def handle_not_found(e):
+    return render_template(
+        "notfound/index.html",
+        error_message="指定のページは見つかりませんでした。"
+    ), 404
+
+# 405 Method Not Allowed
+@notfound.app_errorhandler(405)
+def handle_method_not_allowed(e):
+    response = render_template(
+        "notfound/index.html",
+        error_message="このHTTPメソッドは許可されていません。"
+    )
+
+    return response, 405, {
+        "Allow": ", ".join(e.valid_methods or [])
+    }

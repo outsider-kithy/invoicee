@@ -1,5 +1,5 @@
 from sqlalchemy.exc import SQLAlchemyError
-from flask import render_template, Blueprint, current_app
+from flask import render_template, Blueprint, current_app, request
 
 from models import session
 
@@ -10,12 +10,18 @@ error = Blueprint(
     template_folder="templates",
 )
 
-@error.route("/", methods=["GET"])
+@error.route("/",methods = ("GET","POST"))
 def index():
-    return render_template(
-        "error/index.html",
-        error_message="データベースエラーが発生しました。"
-    ), 500
+    if request.method == 'GET':
+        return render_template(
+            "error/index.html",
+            error_message="データベースエラーが発生しました。"
+        ), 500
+    elif request.method == 'POST':
+        return render_template(
+			"error/index.html",
+			error_message="データベースエラーが発生しました。"
+		), 500
 
 
 @error.app_errorhandler(SQLAlchemyError)

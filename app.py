@@ -1,18 +1,20 @@
 import os
 from flask import Flask
 from sqlalchemy import create_engine
-from sqlalchemy.orm import session, declarative_base
+from sqlalchemy.orm import declarative_base
 from flask_login import LoginManager,login_manager
 from dotenv import load_dotenv
-from models import session,User
+from models import session,User, DATABASE_URL
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent
 load_dotenv(BASE_DIR / '.env')
 
-DATABASE_URL = os.getenv("DATABASE_URL")
-
-engine=create_engine(DATABASE_URL,isolation_level='AUTOCOMMIT')
+engine = create_engine(
+    DATABASE_URL,
+    pool_pre_ping=True,
+    pool_recycle=300
+)
 Base = declarative_base()
 db_uri = os.environ.get(DATABASE_URL)
 
@@ -21,7 +23,7 @@ login_manager.login_view = "login.index"
 
 @login_manager.user_loader
 def load_user(user_id):
-    return session.query(User).get(int(user_id))
+    return session.get(User, int(user_id))
 
 def create_app():
     app = Flask(__name__)
