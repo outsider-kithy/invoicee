@@ -25,6 +25,8 @@ from record.views import record
 from project.views import project
 from admin.views import admin
 from estimate.views import estimate
+from error.views import error
+from notfound.views import notfound
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -66,6 +68,8 @@ def app():
     app.register_blueprint(project, url_prefix="/project")
     app.register_blueprint(admin, url_prefix="/admin")
     app.register_blueprint(estimate, url_prefix="/estimate")
+    app.register_blueprint(error, url_prefix="/error")
+    app.register_blueprint(notfound, url_prefix="/404")
 
     return app
 

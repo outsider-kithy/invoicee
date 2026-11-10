@@ -12,6 +12,7 @@ pytestmark = pytest.mark.unit
     ({'commits': []}, 'Repository information not found'),
     ({'repository': {'name': 'repo'}}, 'Repository full_name not found'),
 ])
+
 def test_invalid_payload_does_not_access_database(client, monkeypatch, payload, message):
     database = Mock()
     monkeypatch.setattr(views, 'session', database)
@@ -26,6 +27,7 @@ def test_invalid_payload_does_not_access_database(client, monkeypatch, payload, 
     (SQLAlchemyError('failure'), 'Database update failed'),
     (RuntimeError('failure'), 'Internal Server Error'),
 ])
+
 def test_database_failure_rolls_back(client, monkeypatch, exception, message):
     database = Mock()
     database.query.side_effect = exception

@@ -20,13 +20,17 @@ def writeExcel(exportJobList,agencyName,accountName,projectName):
     #今日の日付を取得して発行日として入力
     nowDate=datetime.date.today()
 
-    OUTPUT_FILE = f'/tmp/{str(nowDate)}-estimate.xlsx'
-    OUTPUT_FILE_NAME = f'{str(nowDate)}-estimate.xlsx'
+    OUTPUT_FILE_NAME = f"{nowDate}-estimate.xlsx"
+
+    output_dir = Path(OUTPUT_DIR)
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    OUTPUT_FILE = str(output_dir / OUTPUT_FILE_NAME)
 
     shutil.copy(TEMPLATE_FILE,OUTPUT_FILE)
 
     workbook = openpyxl.load_workbook(OUTPUT_FILE)
-    #worksheet=workbook.get_sheet_by_name(u'シート1')
+    
     worksheet=workbook['シート1']
 
     offset = 0
@@ -47,7 +51,7 @@ def writeExcel(exportJobList,agencyName,accountName,projectName):
         worksheet.cell(row=i+offset,column=2).value=exportJobList[i][3]
         #税率
         #print(exportJobList[i][4])
-        tax_rate = int(Decimal(exportJobList[i][4]) * Decimal(100.0))
+        tax_rate = int(Decimal(str(exportJobList[i][4])) * Decimal("100"))
         worksheet.cell(row = i + offset, column = 4).value = str(tax_rate) + "%"
 
         #offset = 13
@@ -55,7 +59,7 @@ def writeExcel(exportJobList,agencyName,accountName,projectName):
         worksheet.cell(row=i+offset,column=2).value=exportJobList[i][3]
         #税率
         #print(exportJobList[i][4])
-        tax_rate = int(Decimal(exportJobList[i][4]) * Decimal(100.0))
+        tax_rate = int(Decimal(str(exportJobList[i][4])) * Decimal("100"))
         worksheet.cell(row = i + offset, column = 4).value = str(tax_rate) + "%"
         #金額
         worksheet.cell(row=i+offset,column=5).number_format=currentJPY
@@ -64,11 +68,11 @@ def writeExcel(exportJobList,agencyName,accountName,projectName):
     #日付を入力
     worksheet["E3"].value=str(nowDate)
     #代理店名を入力
-    worksheet["A3"].value=str(agencyName)
+    worksheet["A3"].value =  agencyName or ""
     #担当者名を入力
-    worksheet["A4"].value=str(accountName)
+    worksheet["A4"].value = accountName or ""
     #プロジェクト名を入力
-    worksheet["A11"].value=str(projectName)
+    worksheet["A11"].value = projectName or ""
     #小計を入力
     worksheet["E40"].number_format=currentJPY
     worksheet["E40"].value="=SUM(E12:E39)"
@@ -119,6 +123,9 @@ def writeExcel(exportJobList,agencyName,accountName,projectName):
     XLSX_MIMETYPE="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 
     response=make_response()
+
+    print("保存前 E12:", worksheet["E12"].value)
+    print("保存前 E12 format:", worksheet["E12"].number_format)
 
     workbook=open(OUTPUT_FILE,"rb")
     response.data=workbook.read()
