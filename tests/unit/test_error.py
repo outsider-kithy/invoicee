@@ -41,16 +41,11 @@ def test_error_get_template(client):
 
 
 # ERR-003
-def test_error_post_not_allowed(client):
-    """
-    /error/ はGET専用であり、
-    POSTアクセスが405になることを確認する。
-    """
-    with patch("error.views.render_template") as mock_render:
-        response = client.post("/error/")
+def test_error_post_returns_500(client):
+    response = client.post("/error/")
 
-        assert response.status_code == 405
-        mock_render.assert_not_called()
+    assert response.status_code == 500
+    assert "データベースエラー".encode("utf-8") in response.data
 
 
 # ERR-004

@@ -143,6 +143,7 @@ def init_test_tools(engine):
             {"id": 2, "tool_type": "E2E_LP", "price": 20000},
             {"id": 3, "tool_type": "E2E_HTML_Mail", "price": 5000},
             {"id": 4, "tool_type": "E2E_Web_Other", "price": 8000},
+            {"id": 5, "tool_type": "E2E_Workflow_Tool", "price": 10000},
         ]
 
         for item in test_tools:

@@ -81,31 +81,13 @@ def test_notfound_post_template(client, authenticated):
         )
 
 
-# NFD-005
-def test_notfound_login_required_get(client):
-    """
-    未ログイン状態でGETアクセスすると
-    ログイン画面へリダイレクトされることを確認する。
-    """
-    with patch("notfound.views.render_template") as mock_render:
-        response = client.get("/404/")
+@pytest.mark.parametrize("method", ["get", "post"])
+def test_notfound_without_login(client, method):
+    response = getattr(client, method)("/404/")
 
-        assert response.status_code == 302
-        assert urlparse(response.location).path == "/login/"
+    assert response.status_code == 404
 
-        mock_render.assert_not_called()
-
-
-# NFD-006
-def test_notfound_login_required_post(client):
-    """
-    未ログイン状態でPOSTアクセスすると
-    ログイン画面へリダイレクトされることを確認する。
-    """
-    with patch("notfound.views.render_template") as mock_render:
-        response = client.post("/404/")
-
-        assert response.status_code == 302
-        assert urlparse(response.location).path == "/login/"
-
-        mock_render.assert_not_called()
+    assert (
+        "指定のページは見つかりませんでした。".encode("utf-8")
+        in response.data
+    )

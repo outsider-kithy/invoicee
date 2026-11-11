@@ -1,5 +1,5 @@
 
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 from werkzeug.security import check_password_hash
 
 
@@ -61,7 +61,7 @@ def test_register_empty_confirmation(client):
 
         assert response.status_code == 200
         mock_flash.assert_called_once_with(
-            "パスワードをもう一度入手してください"
+            "パスワードをもう一度入力してください"
         )
         mock_session.add.assert_not_called()
         mock_session.commit.assert_not_called()
@@ -86,9 +86,16 @@ def test_register_password_mismatch(client):
         mock_session.commit.assert_not_called()
 
 
+
 # POST：ユーザー登録成功
 def test_register_success(client):
     with patch("register.views.session") as mock_session:
+
+        # ユーザー名の重複チェック
+        # 既存ユーザーが存在しない状態を再現
+        mock_session.query.return_value \
+            .filter.return_value \
+            .first.return_value = None
 
         response = client.post("/register/", data={
             "username": "testuser",
@@ -110,9 +117,16 @@ def test_register_success(client):
         assert added_user.username == "testuser"
 
 
+
+
 # POST：パスワードがハッシュ化されている
 def test_register_password_hashed(client):
     with patch("register.views.session") as mock_session:
+
+        # ユーザー名が重複していない状態
+        mock_session.query.return_value \
+            .filter.return_value \
+            .first.return_value = None
 
         response = client.post("/register/", data={
             "username": "testuser",
@@ -133,3 +147,34 @@ def test_register_password_hashed(client):
             added_user.password,
             "password123"
         )
+
+        mock_session.commit.assert_called_once()
+
+
+def test_register_duplicate_username(client):
+    with patch("register.views.session") as mock_session, \
+         patch("register.views.flash") as mock_flash:
+
+        # 既存ユーザーを再現
+        existing_user = MagicMock()
+        existing_user.username = "testuser"
+
+        mock_session.query.return_value \
+            .filter.return_value \
+            .first.return_value = existing_user
+
+        response = client.post("/register/", data={
+            "username": "testuser",
+            "password": "password123",
+            "confirmation": "password123"
+        })
+
+        assert response.status_code == 200
+
+        mock_flash.assert_called_once_with(
+            "このユーザー名は既に使用されています"
+        )
+
+        # DBに新しいユーザーを登録しない
+        mock_session.add.assert_not_called()
+        mock_session.commit.assert_not_called()
