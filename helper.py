@@ -8,7 +8,7 @@ from pathlib import Path
 from decimal import Decimal
 
 BASE_DIR = Path(__file__).resolve().parent
-load_dotenv(BASE_DIR / '.env')
+load_dotenv(BASE_DIR / '.env.test')
 DATABASE_URL = os.getenv("DATABASE_URL")
 TEMPLATE_FILE = os.getenv("TEMPLATE_FILE")
 OUTPUT_DIR = os.getenv("OUTPUT_DIR")

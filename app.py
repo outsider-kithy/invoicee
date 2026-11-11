@@ -6,6 +6,7 @@ from flask_login import LoginManager,login_manager
 from dotenv import load_dotenv
 from models import session,User, DATABASE_URL
 from pathlib import Path
+from sqlalchemy.exc import SQLAlchemyError
 
 BASE_DIR = Path(__file__).resolve().parent
 load_dotenv(BASE_DIR / '.env')
@@ -77,6 +78,13 @@ def create_app():
 
     from logout import views as logout_views
     app.register_blueprint(logout_views.logout, url_prefix="/logout")
+
+	# テスト時のみのルート
+    @app.route("/__test__/database-error")
+    def trigger_database_error():
+        raise SQLAlchemyError(
+			"E2E test database error"
+		)
 
 	# アプリケーションコンテキスト終了時にSessionを破棄
     @app.teardown_appcontext

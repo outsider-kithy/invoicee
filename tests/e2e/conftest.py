@@ -11,12 +11,13 @@ from urllib.request import urlopen
 import pytest
 from dotenv import dotenv_values
 from playwright.sync_api import Page, expect
-from sqlalchemy import create_engine, select
+from sqlalchemy import create_engine, select, text
 from sqlalchemy.orm import Session
 from werkzeug.security import generate_password_hash
 
-from models import Base, User
+from models import Base, User, Tool, Tax
 
+from decimal import Decimal
 
 ROOT = Path(__file__).resolve().parents[2]
 TEST_ENV_FILE = ROOT / ".env.test"
@@ -87,6 +88,9 @@ def init_test_database(e2e_config):
 
         Base.metadata.create_all(bind=test_engine)
 
+		# Web系Toolの初期データを登録
+        init_test_tools(test_engine)
+
         with Session(test_engine) as db:
             user = db.execute(
                 select(User).where(
@@ -109,6 +113,67 @@ def init_test_database(e2e_config):
 
     finally:
         test_engine.dispose()
+
+
+def init_test_tools(engine):
+    """
+    E2Eテスト用のToolマスターデータを初期化する。
+
+    Web系ToolのID 1〜4を保証する。
+    既存レコードがある場合は上書きしない。
+    """
+
+    with Session(engine) as db:
+
+        # テスト用税率を取得、なければ作成
+        tax = db.execute(
+            select(Tax).where(
+                Tax.rate == Decimal("0.10")
+            )
+        ).scalars().first()
+
+        if tax is None:
+            tax = Tax(rate=Decimal("0.10"))
+            db.add(tax)
+            db.flush()
+
+        # Web系ツールのマスターデータ
+        test_tools = [
+            {"id": 1, "tool_type": "E2E_Web", "price": 10000},
+            {"id": 2, "tool_type": "E2E_LP", "price": 20000},
+            {"id": 3, "tool_type": "E2E_HTML_Mail", "price": 5000},
+            {"id": 4, "tool_type": "E2E_Web_Other", "price": 8000},
+        ]
+
+        for item in test_tools:
+
+            # IDが存在する場合は追加しない
+            existing = db.get(Tool, item["id"])
+
+            if existing is not None:
+                continue
+
+            tool = Tool(
+                id=item["id"],
+                tool_type=item["tool_type"],
+                price=item["price"],
+                tax_rate_id=tax.id
+            )
+
+            db.add(tool)
+
+        db.commit()
+
+        with engine.begin() as conn:
+            conn.execute(
+                text("""
+					SELECT setval(
+						pg_get_serial_sequence('tools', 'id'),
+						COALESCE((SELECT MAX(id) FROM tools), 1),
+						(SELECT COUNT(*) > 0 FROM tools)
+					)
+				""")
+			)
 
 
 # ============================================================
