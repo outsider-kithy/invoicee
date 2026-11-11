@@ -1,6 +1,7 @@
 from flask import redirect,render_template,request,url_for,flash,Blueprint
 from flask_login import login_required
 from models import session,Client,Agency,Account,Tool,Tax,Project
+from decimal import Decimal, InvalidOperation
 
 admin = Blueprint(
     "admin",
@@ -51,13 +52,21 @@ def index():
             session.add(Account(account_name = account, agency_id = accountAgency.id))
 
         elif tool:
-            tax_rate = session.query(Tax).filter(Tax.rate == tax).first()
-            
+            try:
+                tax_value = Decimal(tax)
+            except (InvalidOperation, TypeError):
+                flash("税率が正しく指定されていません")
+                return redirect(url_for("admin.index"))
+
+            tax_rate = session.query(Tax).filter(
+                Tax.rate == tax_value
+			).first()
+
             if tax_rate is None:
                 flash("指定された税率が存在しません")
                 return redirect(url_for("admin.index"))
-            
-            session.add(Tool(tool_type = tool, price = price, tax_rate_id = tax_rate.id))
+
+            session.add(Tool(tool_type=tool, price=price, tax_rate_id=tax_rate.id))
             
         # 選択したプロジェクトを終了にする
         elif finished_project:
